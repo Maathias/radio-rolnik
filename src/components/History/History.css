@@ -1,0 +1,15 @@
+.history {
+	overflow-y: auto;
+	padding-bottom: 2.5em;
+	margin-bottom: 1em;
+	font-family: 'Poppins';
+	width: min(100%, 800px);
+	margin: auto;
+}
+
+.history > span {
+	border-bottom: 1px solid #eeec;
+	display: block;
+	margin: 0 0.5em;
+	color: #3a3a3a;
+}

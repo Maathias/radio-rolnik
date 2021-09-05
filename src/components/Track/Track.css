@@ -1,0 +1,102 @@
+.track {
+	height: 2em;
+	margin: 0.3em 0.4em;
+	padding: 0.4em;
+	background-color: #fefefe;
+	display: flex;
+	align-content: center;
+	line-height: 1.9em;
+	border-radius: 6px;
+	position: relative;
+	overflow: hidden;
+}
+
+.track-section-a {
+	width: 5em;
+	flex-shrink: 0;
+	text-align: right;
+}
+
+.track-section-b {
+	width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	display: flex;
+	flex-direction: row;
+	/* justify-content: space-around; */
+}
+
+.track-timestamp {
+	color: #666;
+	margin: 0 0.5em 0 0.2em;
+	font-size: 0.75em;
+	float: left;
+	width: 2.5em;
+	text-align: center;
+	user-select: none;
+}
+
+.track-image {
+	height: 100%;
+	margin-right: 0.5em;
+	border-radius: 3px;
+}
+
+.track-title {
+	padding: 0px 10px;
+	font-weight: bold;
+	text-decoration: none;
+	color: inherit;
+}
+
+.track-artist {
+	padding: 0px 10px;
+	color: #333;
+}
+
+.track-icons {
+	float: right;
+	padding: 0 0.5em;
+}
+
+.track-icons > i {
+	cursor: pointer;
+}
+
+.track-more {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 100%;
+	top: 0;
+	border-radius: inherit;
+	background: hsl(12deg, 4%, 20%);
+	transition: 0.3s ease-in-out;
+
+	display: flex;
+	flex-direction: row;
+	color: #fff;
+	padding: 0.5em;
+	box-sizing: border-box;
+	justify-content: space-around;
+}
+
+.track.open > .track-more {
+	left: 0;
+}
+
+.track-more-button {
+	width: 100%;
+	text-align: center;
+	cursor: pointer;
+	color: inherit;
+}
+
+.track-more-button:hover {
+	background-color: #fff2;
+}
+
+.track-more-button:not(:last-child) {
+	border-right: 1px solid #fff5;
+}
