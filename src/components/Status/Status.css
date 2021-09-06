@@ -1,0 +1,61 @@
+.status {
+	position: fixed;
+	bottom: 3.5rem;
+	left: 2.5%;
+	width: 95%;
+	background: var(--dark);
+	color: var(--white);
+	padding: 0.5em;
+	border-radius: 0.5em;
+	box-sizing: border-box;
+	box-shadow: 0 2px 8px 1px #00000063;
+	z-index: 10;
+	text-decoration: none;
+}
+
+.status-image {
+	height: 3em;
+	float: left;
+	margin-right: 0.5em;
+	border-radius: 0.5em;
+}
+
+.status-track {
+	font-size: 1.1em;
+	display: block;
+	font-weight: bold;
+}
+
+.status-artist {
+	font-size: 0.9em;
+	font-style: italic;
+}
+
+.status i {
+	position: absolute;
+	right: 0.7em;
+	top: 0.7em;
+	font-size: 1.5em;
+}
+
+.status-progress {
+	content: '';
+	--max: calc(100% - 1.1em);
+	position: absolute;
+	left: 0.55em; /* a little bit to the right of album art to make progress bar look level */
+	bottom: 0;
+	border-bottom: 2px solid white;
+	border-radius: 2px;
+	transition: 1s linear;
+}
+
+.status-progress:after {
+	content: '';
+	width: 8px;
+	height: 8px;
+	position: absolute;
+	right: -4px;
+	bottom: -5px;
+	background-color: white;
+	border-radius: 100%;
+}

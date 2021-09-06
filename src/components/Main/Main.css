@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand&family=Poppins');
+
+.main {
+	height: 100vh;
+	justify-content: flex-end;
+	background-color: var(--light);
+	font-family: 'Quicksand';
+	overflow: hidden auto;
+}
+
+.wrapper {
+	max-width: 600px;
+	margin: auto;
+	box-sizing: border-box;
+}
