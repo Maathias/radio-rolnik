@@ -15,7 +15,7 @@
 }
 
 .info-wrapper {
-	border-radius: 1em;
+	border-radius: 0.5em;
 	background: linear-gradient(180deg, white, transparent);
 	height: 100%;
 	padding: 1em;

@@ -36,6 +36,7 @@
 	white-space: nowrap;
 	display: flex;
 	flex-direction: row;
+	align-items: center;
 }
 
 .track-timestamp {
@@ -66,6 +67,7 @@
 .track-icons {
 	float: right;
 	padding: 0 0.5em;
+	margin: auto;
 }
 
 .track-icons > i {
@@ -99,6 +101,13 @@
 	text-align: center;
 	cursor: pointer;
 	color: inherit;
+	height: 100%;
+	display: flex;
+	align-items: center;
+}
+
+.track-more-button > i {
+	width: 100%;
 }
 
 .track-more-button:hover {
