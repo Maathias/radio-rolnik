@@ -6,7 +6,7 @@
 	background: var(--dark);
 	color: var(--white);
 	padding: 0.5em;
-	border-radius: 1em;
+	border-radius: 0.5em;
 	box-sizing: border-box;
 	box-shadow: 0 2px 8px 1px #00000063;
 	z-index: 10;
@@ -16,8 +16,8 @@
 .status-image {
 	height: 3em;
 	float: left;
-	margin-left: 0.2em;
 	margin-right: 0.5em;
+	border-radius: 0.5em;
 }
 
 .status-track {
@@ -40,11 +40,12 @@
 
 .status-progress {
 	content: '';
-	--max: calc(100% - 2em);
+	--max: calc(100% - 1.1em);
 	position: absolute;
-	left: 1em;
+	left: 0.55em; /* a little bit to the right of album art to make progress bar look level */
 	bottom: 0;
 	border-bottom: 2px solid white;
+	border-radius: 2px;
 	transition: 1s linear;
 }
 
@@ -53,7 +54,7 @@
 	width: 8px;
 	height: 8px;
 	position: absolute;
-	right: 0px;
+	right: -4px;
 	bottom: -5px;
 	background-color: white;
 	border-radius: 100%;
