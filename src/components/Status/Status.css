@@ -3,8 +3,8 @@
 	bottom: 3.5rem;
 	left: 2.5%;
 	width: 95%;
-	background: hsl(356deg 55% 22%);
-	color: #fefefe;
+	background: var(--dark);
+	color: var(--white);
 	padding: 0.5em;
 	border-radius: 1em;
 	box-sizing: border-box;

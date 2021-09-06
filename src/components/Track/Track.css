@@ -2,7 +2,7 @@
 	height: 2em;
 	margin: 0.3em 0.4em;
 	padding: 0.4em;
-	background-color: #fefefe;
+	background-color: var(--white);
 	display: flex;
 	align-content: center;
 	line-height: 1.9em;
@@ -14,7 +14,19 @@
 .track-section-a {
 	width: 5em;
 	flex-shrink: 0;
-	text-align: right;
+	justify-content: flex-end;
+	display: flex;
+}
+
+.track-section-a.empty {
+	width: unset;
+}
+
+.track-section-a > span {
+	color: #666;
+	width: 100%;
+	text-align: center;
+	user-select: none;
 }
 
 .track-section-b {
@@ -24,22 +36,18 @@
 	white-space: nowrap;
 	display: flex;
 	flex-direction: row;
-	/* justify-content: space-around; */
 }
 
 .track-timestamp {
-	color: #666;
-	margin: 0 0.5em 0 0.2em;
 	font-size: 0.75em;
-	float: left;
-	width: 2.5em;
-	text-align: center;
-	user-select: none;
+}
+
+.track-rank:before {
+	content: '#';
 }
 
 .track-image {
 	height: 100%;
-	margin-right: 0.5em;
 	border-radius: 3px;
 }
 

@@ -3,7 +3,13 @@
 .main {
 	height: 100vh;
 	justify-content: flex-end;
-	background-color: hsl(356deg 50% 92%);
+	background-color: var(--light);
 	font-family: 'Quicksand';
 	overflow: hidden auto;
+}
+
+.wrapper {
+	max-width: 600px;
+	margin: auto;
+	box-sizing: border-box;
 }

@@ -3,8 +3,6 @@
 	padding-bottom: 2.5em;
 	margin-bottom: 1em;
 	font-family: 'Poppins';
-	width: min(100%, 800px);
-	margin: auto;
 }
 
 .history > span {

@@ -7,10 +7,15 @@ function Track(props) {
 
 	return (
 		<div className={['track', open ? 'open' : ''].join(' ')}>
-			<div className="track-section-a">
+			<div
+				className={
+					'track-section-a ' + (props.timestamp || props.rank ? '' : 'empty')
+				}
+			>
 				{props.timestamp && (
 					<span className="track-timestamp">{props.timestamp}</span>
 				)}
+				{props.rank && <span className="track-rank">{props.rank}</span>}
 				<img
 					className="track-image"
 					src={props.album.art ?? '/media/default.png'}

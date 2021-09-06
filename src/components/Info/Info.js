@@ -10,6 +10,8 @@ function Info() {
 
 	let percent = (track.votes.up / (track.votes.up + track.votes.down)) * 100
 
+	document.title = `${track.title} | radio-rolnik`
+
 	return (
 		<div className="wrapper info">
 			<img src={track.album.art} className="info-image" alt="album cover" />

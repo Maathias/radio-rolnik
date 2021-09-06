@@ -6,3 +6,11 @@ body {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
+
+:root {
+	--deg: 170deg;
+	--white: hsl(0, 0%, 100%);
+	--light: hsl(var(--deg) 50% 92%);
+	--main: hsl(var(--deg), 57%, 52%);
+	--dark: hsl(var(--deg) 55% 22%);
+}
