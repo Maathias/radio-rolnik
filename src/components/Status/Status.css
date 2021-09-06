@@ -45,7 +45,7 @@
 	left: 1em;
 	bottom: 0;
 	border-bottom: 2px solid white;
-	transition: 0.4s;
+	transition: 1s linear;
 }
 
 .status-progress:after {

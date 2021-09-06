@@ -4,6 +4,7 @@ import {
 	Route,
 	Redirect,
 } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 
 import Nav from '../Nav/Nav'
 import History from '../History/History'
@@ -18,13 +19,23 @@ import PlayingContext from '../../contexts/Playing'
 
 import './Main.css'
 
-var playing = get('2340q8ghedsnawg1')
-
 document.setTitle = (prefix, suffix) => {
 	document.title = `${prefix} | ${suffix ?? 'radio-rolnik'}`
 }
 
 function Main() {
+
+	let [playing, setPlaying] = useState({...get('2340q8ghedsnawg1'), progress: 0}),
+		step = 1/playing.duration
+
+	useEffect(()=>{
+		setInterval(()=> {
+			console.log(playing.progress+=step)
+			if(playing.progress >= 1) playing.progress = 0
+			setPlaying({...playing })
+		}, 1e3)
+	}, [])
+
 	return (
 		<PlayingContext.Provider value={playing}>
 			<div className="main">
@@ -33,19 +44,22 @@ function Main() {
 						<Route exact path="/">
 							<History
 								next={get('8034thrgnu0380')}
-								playing={playing}
 								tracks={[get('2340q8ghedsnawg1'), get('8034thrgnu0380')]}
 							/>
 						</Route>
+
 						<Route path="/utwor/:id">
-							<Info playing={playing} />
+							<Info />
 						</Route>
+
 						<Route path="/top">
 							<Top tracks={[get('2340q8ghedsnawg1'), get('8034thrgnu0380')]} />
 						</Route>
+
 						<Route path="/wyszukaj/:query?">
 							<Search />
 						</Route>
+						
 						<Route render={() => <Redirect to="/" />} />
 					</Switch>
 					<Nav
@@ -62,7 +76,7 @@ function Main() {
 							{ label: 'Ustawienia', to: '/ustawienia', icon: 'cog-alt' },
 						]}
 					/>
-					<Status track={playing} progress=".75" />
+					<Status />
 				</Router>
 			</div>
 		</PlayingContext.Provider>

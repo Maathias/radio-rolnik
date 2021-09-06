@@ -26,7 +26,7 @@ var tracks = {
 			art: '/media/default.png',
 			year: '2020',
 		},
-		duration: 23231,
+		duration: 156,
 		explicit: true,
 		banned: false,
 		votes: {
@@ -37,7 +37,7 @@ var tracks = {
 	},
 }
 
-var get = (id) => {
+function get(id) {
 	return tracks[id]
 }
 
