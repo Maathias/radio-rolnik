@@ -4,7 +4,7 @@ import {
 	Route,
 	Redirect,
 } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import Nav from '../Nav/Nav'
 import History from '../History/History'
@@ -24,17 +24,9 @@ document.setTitle = (prefix, suffix) => {
 }
 
 function Main() {
-
-	let [playing, setPlaying] = useState({...get('2340q8ghedsnawg1'), progress: 0}),
-		step = 1/playing.duration
-
-	useEffect(()=>{
-		setInterval(()=> {
-			console.log(playing.progress+=step)
-			if(playing.progress >= 1) playing.progress = 0
-			setPlaying({...playing })
-		}, 1e3)
-	}, [])
+	let [playing] = useState({
+		...get('2340q8ghedsnawg1'),
+	})
 
 	return (
 		<PlayingContext.Provider value={playing}>
@@ -59,7 +51,7 @@ function Main() {
 						<Route path="/wyszukaj/:query?">
 							<Search />
 						</Route>
-						
+
 						<Route render={() => <Redirect to="/" />} />
 					</Switch>
 					<Nav

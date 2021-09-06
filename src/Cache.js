@@ -41,4 +41,8 @@ function get(id) {
 	return tracks[id]
 }
 
-export { tracks, get }
+function search(query) {
+	return Array(query.length).fill(get('2340q8ghedsnawg1'))
+}
+
+export { tracks, get, search }

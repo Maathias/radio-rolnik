@@ -1,14 +1,23 @@
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import Track from '../Track/Track'
-import { get } from '../../Cache'
+import { search } from '../../Cache'
 
 import './Search.css'
 
 function Search(props) {
-	let { query } = useParams()
+	let { query } = useParams(),
+		[results, setResults] = useState([]),
+		timeout
 
 	document.setTitle(`"${query}"`)
+
+	useEffect(() => {
+		return () => {
+			clearTimeout(timeout)
+		}
+	}, [])
 
 	return (
 		<div className="wrapper search">
@@ -18,9 +27,15 @@ function Search(props) {
 				placeholder="Wyszukaj utwór"
 				type="text"
 				defaultValue={query}
+				onChange={(e) => {
+					clearTimeout(timeout)
+					timeout = setTimeout(() => {
+						setResults(search(e.target.value))
+					}, 500)
+				}}
 			/>
 			<div className="search-results">
-				{[get('2340q8ghedsnawg1'), get('8034thrgnu0380')].map((track) => {
+				{results.map((track) => {
 					return <Track key={track.id} {...track} />
 				})}
 			</div>
