@@ -24,7 +24,7 @@ document.setTitle = (prefix, suffix) => {
 }
 
 function Main() {
-	let [playing] = useState({
+	const [playing] = useState({
 		...get('2340q8ghedsnawg1'),
 	})
 

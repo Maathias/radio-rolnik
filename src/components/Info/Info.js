@@ -5,10 +5,10 @@ import { get } from '../../Cache'
 import './Info.css'
 
 function Info() {
-	let { id } = useParams(),
+	const { id } = useParams(),
 		track = get(id)
 
-	let percent = (track.votes.up / (track.votes.up + track.votes.down)) * 100
+	const percent = (track.votes.up / (track.votes.up + track.votes.down)) * 100
 
 	document.title = `${track.title} | radio-rolnik`
 
