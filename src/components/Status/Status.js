@@ -11,15 +11,21 @@ function Status(props) {
 
 	const step = 1 / duration
 
-	useEffect(() => {
-		let anim = setInterval(() => {
-			setProgress((progress) => progress + step)
-			if (progress >= 1) clearInterval(anim)
-		}, 1e3)
-		return () => {
-			clearInterval(anim)
-		}
-	}, []) // eslint-disable-line react-hooks/exhaustive-deps
+	useEffect(
+		(anim) => {
+			if (progress < 1) {
+				anim = setTimeout(() => {
+					setProgress(progress + step)
+				}, 1e3)
+			} else if (progress > 1) {
+				setProgress(1) // if FPU decides that 1 / duration * duration !== 1
+			}
+			return () => {
+				clearInterval(anim)
+			}
+		},
+		[progress, step]
+	)
 
 	return (
 		<Link className="status" to={`/utwor/${id}`}>
