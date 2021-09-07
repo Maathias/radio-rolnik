@@ -6,23 +6,32 @@ import PlayingContext from '../../contexts/Playing'
 import './Status.css'
 
 function Status(props) {
-	let playing = useContext(PlayingContext),
+	const { id, album, title, duration, artists } = useContext(PlayingContext),
 		[progress, setProgress] = useState(0)
 
-	let step = 1 / playing.duration
+	const step = 1 / duration
 
-	useEffect(() => {
-		let anim = setInterval(() => {
-			setProgress((progress += step))
-			if (progress >= 1) clearInterval(anim)
-		}, 1e3)
-	}, [])
+	useEffect(
+		(anim) => {
+			if (progress < 1) {
+				anim = setTimeout(() => {
+					setProgress(progress + step)
+				}, 1e3)
+			} else if (progress > 1) {
+				setProgress(1) // if FPU decides that 1 / duration * duration !== 1
+			}
+			return () => {
+				clearInterval(anim)
+			}
+		},
+		[progress, step]
+	)
 
 	return (
-		<Link className="status" to={`/utwor/${playing.id}`}>
-			<img className="status-image" alt="album cover" src={playing.album.art} />
-			<span className="status-track">{playing.title}</span>
-			<span className="status-artist">{playing.artists.join(', ')}</span>
+		<Link className="status" to={`/utwor/${id}`}>
+			<img className="status-image" alt="album cover" src={album.art} />
+			<span className="status-track">{title}</span>
+			<span className="status-artist">{artists.join(', ')}</span>
 			<i className="icon-info"></i>
 			<div
 				className="status-progress"

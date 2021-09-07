@@ -7,9 +7,9 @@ import { search } from '../../Cache'
 import './Search.css'
 
 function Search(props) {
-	let { query } = useParams(),
-		[results, setResults] = useState([]),
-		timeout
+	const { query } = useParams(),
+		[results, setResults] = useState([])
+	let timeout
 
 	document.setTitle(`"${query}"`)
 
@@ -17,7 +17,7 @@ function Search(props) {
 		return () => {
 			clearTimeout(timeout)
 		}
-	}, [])
+	}, []) // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<div className="wrapper search">

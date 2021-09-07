@@ -2,25 +2,24 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
 
-
 import './Nav.css'
 
-function Button(props) {
+function Button({ to, onClick, active, icon, label }) {
 	return (
 		<Link
-			to={props.to}
-			onClick={props.onClick}
-			className={`nav-button ${props.active ? 'active' : ''}`}
+			to={to}
+			onClick={onClick}
+			className={`nav-button ${active ? 'active' : ''}`}
 		>
-			<i className={`icon-${props.icon}`}></i>
-			<span>{props.label}</span>
+			<i className={`icon-${icon}`}></i>
+			<span>{label}</span>
 		</Link>
 	)
 }
 
-function Nav(props) {
+function Nav({ buttons }) {
 	function getTab() {
-		return props.buttons
+		return buttons
 			.slice()
 			.reverse()
 			.find((button) =>
@@ -28,12 +27,12 @@ function Nav(props) {
 			).label
 	}
 
-	let [current, setCurrent] = useState(getTab()),
+	const [current, setCurrent] = useState(getTab()),
 		location = useLocation()
 
 	useEffect(() => {
 		setCurrent(getTab())
-		let label = (function () {
+		const label = (function () {
 			switch (current) {
 				default:
 				case 'History':
@@ -52,14 +51,14 @@ function Nav(props) {
 
 	return (
 		<nav className="nav">
-			{props.buttons.map((button) => (
+			{buttons.map(({ label, icon, to }) => (
 				<Button
-					key={button.label}
-					label={button.label}
-					icon={button.icon}
-					active={button.label === current}
-					to={button.to}
-					onClick={() => setCurrent(button.label)}
+					key={label}
+					label={label}
+					icon={icon}
+					active={label === current}
+					to={to}
+					onClick={() => setCurrent(label)}
 				/>
 			))}
 		</nav>
