@@ -1,17 +1,21 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
-import { get, download } from '../../Cache'
+import { get } from '../../Cache'
 
 import './Info.css'
 
 function Info() {
 	const { id } = useParams(),
-		[track, setTrack] = useState({ votes: {}, album: {}, artists: [] })
+		[track, setTrack] = useState({
+			title: 'Tytuł',
+			votes: {},
+			album: {},
+			artists: ['Autor'],
+		})
 
 	useEffect(() => {
 		get(id).then((track) => {
-			console.log('get', track)
 			setTrack(track)
 		})
 	}, [id])

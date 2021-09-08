@@ -13,7 +13,7 @@ import Info from '../Info/Info'
 import Top from '../Top/Top'
 import Search from '../Search/Search'
 
-import { get, download } from '../../Cache'
+import { get } from '../../Cache'
 
 import PlayingContext from '../../contexts/Playing'
 
@@ -30,11 +30,11 @@ function Main() {
 		[top, setTop] = useState([])
 
 	useEffect(() => {
-		download('3OcyTN8Nz3bdne5aq9mMR5').then((track) => {
+		get('3OcyTN8Nz3bdne5aq9mMR5').then((track) => {
 			setPlaying(track)
 			setNext(track)
-			setPrevious([track, track, track])
-			setTop([track, track])
+			setPrevious([track])
+			setTop([track])
 		})
 	}, [])
 
