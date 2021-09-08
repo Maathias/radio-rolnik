@@ -6,7 +6,13 @@ import PlayingContext from '../../contexts/Playing'
 import './Status.css'
 
 function Status(props) {
-	const { id, album, title, duration, artists } = useContext(PlayingContext),
+	const {
+			id,
+			title,
+			artists = [],
+			album = {},
+			duration,
+		} = useContext(PlayingContext),
 		[progress, setProgress] = useState(0)
 
 	const step = 1 / duration

@@ -1,48 +1,40 @@
-var tracks = {
-	'8034thrgnu0380': {
-		id: '8034thrgnu0380',
-		title: 'Fiołkowe Pole',
-		artists: ['Sobel'],
-		album: {
-			name: 'Jakiś',
-			art: 'data:image/jpeg;base64,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',
-			year: '2020',
-		},
-		duration: 23451,
-		explicit: false,
-		banned: false,
-		votes: {
-			up: 124,
-			down: 12,
-			rank: 2,
-		},
-	},
-	'2340q8ghedsnawg1': {
-		id: '2340q8ghedsnawg1',
-		title: 'Bandyta',
-		artists: ['Sobel'],
-		album: {
-			name: 'Jakiś Inny',
-			art: '/media/default.png',
-			year: '2020',
-		},
-		duration: 156,
-		explicit: true,
-		banned: false,
-		votes: {
-			up: 356,
-			down: 62,
-			rank: 1,
-		},
-	},
-}
+import ky from 'ky'
+
+var tracks = {}
 
 function get(id) {
-	return tracks[id]
+	return new Promise((resolve, reject) => {
+		if (typeof tracks[id] === 'undefined') {
+			download(id).then((track) => resolve(track))
+		} else resolve(tracks[id])
+	})
+}
+
+function getMultiple(ids) {
+	return new Promise((resolve, reject) => {
+		Promise.all(ids.map((id) => get(id))).then((tracks) => resolve(tracks))
+	})
+}
+
+function download(id) {
+	return new Promise((resolve, reject) => {
+		ky.get('/api/track/' + id)
+			.json()
+			.then((track) => {
+				tracks[track.id] = track
+				resolve(track)
+			})
+			.catch((err) => reject(err))
+	})
 }
 
 function search(query) {
-	return Array(query.length).fill(get('2340q8ghedsnawg1'))
+	return new Promise((resolve, reject) => {
+		ky.get('/api/search/track/' + query)
+			.json()
+			.then((data) => resolve(data))
+			.catch((err) => reject(err))
+	})
 }
 
-export { tracks, get, search }
+export { tracks, get, getMultiple, download, search }
