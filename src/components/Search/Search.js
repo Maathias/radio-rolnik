@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import Track from '../Track/Track'
-import { search } from '../../Cache'
+import { get, getMultiple, search, tracks } from '../../Cache'
 
 import './Search.css'
 
@@ -28,9 +28,14 @@ function Search(props) {
 				type="text"
 				defaultValue={query}
 				onChange={(e) => {
+					const query = e.target.value
+
 					clearTimeout(timeout)
+
 					timeout = setTimeout(() => {
-						setResults(search(e.target.value))
+						search(query).then(({ tracks, total }) => {
+							getMultiple(tracks).then((tracks) => setResults(tracks))
+						})
 					}, 500)
 				}}
 			/>

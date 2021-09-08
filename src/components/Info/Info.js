@@ -1,12 +1,20 @@
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
-import { get } from '../../Cache'
+import { get, download } from '../../Cache'
 
 import './Info.css'
 
 function Info() {
 	const { id } = useParams(),
-		track = get(id)
+		[track, setTrack] = useState({ votes: {}, album: {}, artists: [] })
+
+	useEffect(() => {
+		get(id).then((track) => {
+			console.log('get', track)
+			setTrack(track)
+		})
+	}, [id])
 
 	const percent = (track.votes.up / (track.votes.up + track.votes.down)) * 100
 

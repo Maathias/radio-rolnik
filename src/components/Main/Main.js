@@ -4,7 +4,7 @@ import {
 	Route,
 	Redirect,
 } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Nav from '../Nav/Nav'
 import History from '../History/History'
@@ -13,7 +13,7 @@ import Info from '../Info/Info'
 import Top from '../Top/Top'
 import Search from '../Search/Search'
 
-import { get } from '../../Cache'
+import { get, download } from '../../Cache'
 
 import PlayingContext from '../../contexts/Playing'
 
@@ -24,9 +24,19 @@ document.setTitle = (prefix, suffix) => {
 }
 
 function Main() {
-	const [playing] = useState({
-		...get('2340q8ghedsnawg1'),
-	})
+	const [playing, setPlaying] = useState({}),
+		[next, setNext] = useState({}),
+		[previous, setPrevious] = useState([]),
+		[top, setTop] = useState([])
+
+	useEffect(() => {
+		download('3OcyTN8Nz3bdne5aq9mMR5').then((track) => {
+			setPlaying(track)
+			setNext(track)
+			setPrevious([track, track, track])
+			setTop([track, track])
+		})
+	}, [])
 
 	return (
 		<PlayingContext.Provider value={playing}>
@@ -34,10 +44,7 @@ function Main() {
 				<Router>
 					<Switch>
 						<Route exact path="/">
-							<History
-								next={get('8034thrgnu0380')}
-								tracks={[get('2340q8ghedsnawg1'), get('8034thrgnu0380')]}
-							/>
+							<History next={next} tracks={previous} />
 						</Route>
 
 						<Route path="/utwor/:id">
@@ -45,7 +52,7 @@ function Main() {
 						</Route>
 
 						<Route path="/top">
-							<Top tracks={[get('2340q8ghedsnawg1'), get('8034thrgnu0380')]} />
+							<Top tracks={top} />
 						</Route>
 
 						<Route path="/wyszukaj/:query?">
