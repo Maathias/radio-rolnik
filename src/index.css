@@ -10,7 +10,7 @@ body {
 :root {
 	--deg: 170deg;
 	--white: hsl(0, 0%, 100%);
-	--light: hsl(var(--deg) 50% 92%);
+	--light: hsl(var(--deg) 50% 88%);
 	--main: hsl(var(--deg), 57%, 52%);
 	--dark: hsl(var(--deg) 55% 22%);
 }

@@ -8,8 +8,8 @@ import './Status.css'
 function Status(props) {
 	const {
 			id,
-			title,
-			artists = [],
+			title = 'Tytuł',
+			artists = ['Autor'],
 			album = {},
 			duration,
 		} = useContext(PlayingContext),
