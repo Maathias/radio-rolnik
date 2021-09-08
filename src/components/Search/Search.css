@@ -10,6 +10,12 @@
 	border-bottom: 1px solid #fffc;
 	padding: 0.5em 1em;
 	width: 100%;
-	margin-bottom: 1em;
 	box-sizing: border-box;
+}
+
+.search-meta {
+	display: block;
+	text-align: left;
+	margin: 1em;
+	color: #000a;
 }
