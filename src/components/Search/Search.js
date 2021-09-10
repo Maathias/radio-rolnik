@@ -6,13 +6,13 @@ import { getMultiple, search } from '../../Cache'
 
 import './Search.css'
 
+var timeout
+
 function Search() {
 	const { query } = useParams(),
 		[results, setResults] = useState([]),
 		[meta, setMeta] = useState(''),
 		input = createRef()
-
-	let timeout
 
 	function run(query) {
 		query = query.trim()
@@ -59,7 +59,7 @@ function Search() {
 				ref={input}
 				onChange={(e) => {
 					clearTimeout(timeout)
-					timeout = setTimeout(() => run(e.target.value), 500)
+					timeout = setTimeout(() => run(e.target.value), 1e3)
 				}}
 				onKeyPress={(e) => {
 					clearTimeout(timeout)
