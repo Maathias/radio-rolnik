@@ -26,7 +26,11 @@ function Info() {
 
 	return (
 		<div className="wrapper info">
-			<img src={track.album.art} className="info-image" alt="album cover" />
+			<img
+				src={track.album.art ?? '/media/default.png'}
+				className="info-image"
+				alt="album cover"
+			/>
 			<div className="info-wrapper">
 				<span className="title">{track.title}</span>
 				<span className="artist">{track.artists[0]}</span>

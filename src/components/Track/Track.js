@@ -4,8 +4,8 @@ import './Track.css'
 
 function Track({
 	id,
-	title = 'Tytuł',
-	artists = ['Autor'],
+	title = '-',
+	artists = ['-'],
 	album = {},
 	timestamp,
 	rank,
