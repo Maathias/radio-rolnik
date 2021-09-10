@@ -5,9 +5,14 @@
 	font-family: 'Poppins';
 }
 
-.history > span {
+.history-section > span {
 	border-bottom: 1px solid #eeec;
 	display: block;
-	margin: 0 0.5em;
+	margin: 1em 0.5em 0;
 	color: #3a3a3a;
+}
+
+.history-section.now > .track {
+	background-color: var(--main);
+	box-shadow: 2px 2px 4px #6363637d;
 }

@@ -1,19 +1,48 @@
-import { useEffect, useState } from 'react'
+import { createRef, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import Track from '../Track/Track'
-import { get, getMultiple, search, tracks } from '../../Cache'
+import { getMultiple, search } from '../../Cache'
 
 import './Search.css'
 
-function Search(props) {
-	const { query } = useParams(),
-		[results, setResults] = useState([])
-	let timeout
+var timeout
 
-	document.setTitle(`"${query}"`)
+function Search() {
+	const { query } = useParams(),
+		[results, setResults] = useState([]),
+		[meta, setMeta] = useState(''),
+		input = createRef()
+
+	function run(query) {
+		query = query.trim()
+		if (query.length < 1) return
+
+		setMeta(`Wyszukiwanie...`)
+
+		search(query)
+			.then(({ tracks, total }) => {
+				getMultiple(tracks)
+					.then((tracks) => {
+						setResults(tracks)
+						setMeta(`Znaleziono ${total} utworów`)
+					})
+					.catch((err) => {
+						setMeta(`Wystąpił błąd podczas pobierania utworów`)
+					})
+			})
+			.catch((err) => {
+				setMeta(`Wystąpił błąd podczas wyszukiwania`)
+			})
+	}
+
+	document.setTitle(query ? `"${query}"` : 'Wyszukaj')
 
 	useEffect(() => {
+		if (input.current.value !== '') {
+			run(input.current.value)
+		}
+
 		return () => {
 			clearTimeout(timeout)
 		}
@@ -27,19 +56,23 @@ function Search(props) {
 				placeholder="Wyszukaj utwór"
 				type="text"
 				defaultValue={query}
+				ref={input}
 				onChange={(e) => {
-					const query = e.target.value
-
 					clearTimeout(timeout)
-
-					timeout = setTimeout(() => {
-						search(query).then(({ tracks, total }) => {
-							getMultiple(tracks).then((tracks) => setResults(tracks))
-						})
-					}, 500)
+					timeout = setTimeout(() => run(e.target.value), 1e3)
+				}}
+				onKeyPress={(e) => {
+					clearTimeout(timeout)
+					if (e.key === 'Enter') run(e.target.value)
 				}}
 			/>
 			<div className="search-results">
+				{meta && (
+					<span className="search-meta">
+						<i className="icon-align-left"></i>&nbsp;
+						{meta}
+					</span>
+				)}
 				{results.map((track) => {
 					return <Track key={track.id} {...track} />
 				})}

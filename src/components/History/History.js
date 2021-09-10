@@ -11,14 +11,28 @@ function History({ next, tracks }) {
 
 	return (
 		<div className="wrapper history">
-			<span>Następny:</span>
-			<Track {...next} timestamp=">" />
-			<span>Gra teraz:</span>
-			<Track {...playing} timestamp="~" />
-			<span>Poprzednie:</span>
-			{tracks.map((track) => {
-				return <Track key={track.id} {...track} timestamp="14:33" />
-			})}
+			{next && (
+				<div className="history-section next">
+					<span>Następny:</span>
+					<Track {...next} timestamp=">" />
+				</div>
+			)}
+
+			<div className="history-section now">
+				<span>Gra teraz:</span>
+				<Track {...playing} timestamp="~" />
+			</div>
+
+			<div className="history-section previous">
+				<span>Poprzednie:</span>
+				{tracks.map((track) => {
+					let time = track.timestamp
+						? new Date(track.timestamp).toISOString().slice(11, 16)
+						: '-:-'
+
+					return <Track key={track.id} {...track} timestamp={time} />
+				})}
+			</div>
 		</div>
 	)
 }

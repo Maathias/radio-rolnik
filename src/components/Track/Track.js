@@ -2,7 +2,14 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import './Track.css'
 
-function Track({ id, title, artists = [], album = {}, timestamp, rank }) {
+function Track({
+	id,
+	title = '-',
+	artists = ['-'],
+	album = {},
+	timestamp,
+	rank,
+}) {
 	const [open, setOpen] = useState(false)
 
 	return (

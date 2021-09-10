@@ -37,4 +37,4 @@ function search(query) {
 	})
 }
 
-export { tracks, get, getMultiple, download, search }
+export { tracks, get, getMultiple, search }

@@ -1,17 +1,21 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
-import { get, download } from '../../Cache'
+import { get } from '../../Cache'
 
 import './Info.css'
 
 function Info() {
 	const { id } = useParams(),
-		[track, setTrack] = useState({ votes: {}, album: {}, artists: [] })
+		[track, setTrack] = useState({
+			title: 'Tytuł',
+			votes: {},
+			album: {},
+			artists: ['Autor'],
+		})
 
 	useEffect(() => {
 		get(id).then((track) => {
-			console.log('get', track)
 			setTrack(track)
 		})
 	}, [id])
@@ -22,7 +26,11 @@ function Info() {
 
 	return (
 		<div className="wrapper info">
-			<img src={track.album.art} className="info-image" alt="album cover" />
+			<img
+				src={track.album.art ?? '/media/default.png'}
+				className="info-image"
+				alt="album cover"
+			/>
 			<div className="info-wrapper">
 				<span className="title">{track.title}</span>
 				<span className="artist">{track.artists[0]}</span>
