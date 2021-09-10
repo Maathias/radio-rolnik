@@ -5,6 +5,7 @@ import {
 	Redirect,
 } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import ky from 'ky'
 
 import Nav from '../Nav/Nav'
 import History from '../History/History'
@@ -13,7 +14,8 @@ import Info from '../Info/Info'
 import Top from '../Top/Top'
 import Search from '../Search/Search'
 
-import { get } from '../../Cache'
+import { get, getMultiple } from '../../Cache'
+import { addEvent } from '../../socket'
 
 import PlayingContext from '../../contexts/Playing'
 
@@ -25,16 +27,38 @@ document.setTitle = (prefix, suffix) => {
 
 function Main() {
 	const [playing, setPlaying] = useState({}),
-		[next, setNext] = useState({}),
+		[elapsed, setElapsed] = useState(0),
+		[paused, setPaused] = useState(true),
+		[next, setNext] = useState(),
 		[previous, setPrevious] = useState([]),
 		[top, setTop] = useState([])
 
 	useEffect(() => {
-		get('3OcyTN8Nz3bdne5aq9mMR5').then((track) => {
-			setPlaying(track)
-			setNext(track)
-			setPrevious([track])
-			setTop([track])
+		addEvent('status', ({ trackid, progress, paused }) => {
+			get(trackid).then((track) => {
+				setPlaying(track)
+				setElapsed(progress)
+				setPaused(paused)
+			})
+		})
+
+		addEvent('next', ({ trackid }) => {
+			get(trackid).then((track) => {
+				setNext(track)
+			})
+		})
+
+		addEvent('previous', ({ trackids, timestamps }) => {
+			getMultiple(trackids).then((tracks) =>
+				// insert timestamps to tracks
+				setPrevious(
+					tracks.map((track, i) => ({ ...track, timestamp: timestamps[i] }))
+				)
+			)
+		})
+
+		addEvent('top', ({ trackids }) => {
+			getMultiple(trackids).then((tracks) => setTop(tracks))
 		})
 	}, [])
 
@@ -75,7 +99,7 @@ function Main() {
 							{ label: 'Ustawienia', to: '/ustawienia', icon: 'cog-alt' },
 						]}
 					/>
-					<Status />
+					<Status progress={elapsed} paused={paused} />
 				</Router>
 			</div>
 		</PlayingContext.Provider>
