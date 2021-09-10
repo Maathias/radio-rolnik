@@ -5,43 +5,58 @@ import PlayingContext from '../../contexts/Playing'
 
 import './Status.css'
 
-function Status(props) {
+function Status({ progress, paused, onEnd }) {
 	const {
 			id,
-			title = 'Tytuł',
-			artists = ['Autor'],
+			title = '-',
+			artists = ['-'],
 			album = {},
 			duration,
 		} = useContext(PlayingContext),
-		[progress, setProgress] = useState(0)
+		[elapsed, setElapsed] = useState()
 
-	const step = 1 / duration
+	const step = 500,
+		tread = step / duration
+
+	useEffect(() => {
+		setElapsed(progress ? progress / duration : 0)
+	}, [progress, duration])
 
 	useEffect(
 		(anim) => {
-			if (progress < 1) {
-				anim = setTimeout(() => {
-					setProgress(progress + step)
-				}, 1e3)
-			} else if (progress > 1) {
-				setProgress(1) // if FPU decides that 1 / duration * duration !== 1
+			if (!paused) {
+				if (elapsed < 1) {
+					anim = setTimeout(() => {
+						setElapsed(elapsed + tread)
+					}, step)
+				} else if (elapsed > 1) {
+					setElapsed(1) // if FPU decides that 1 / duration * duration !== 1
+				}
 			}
+
 			return () => {
-				clearInterval(anim)
+				clearTimeout(anim)
 			}
 		},
-		[progress, step]
+		[elapsed, tread, paused]
 	)
 
 	return (
-		<Link className="status" to={`/utwor/${id}`}>
-			<img className="status-image" alt="album cover" src={album.art} />
+		<Link
+			className={['status', paused ? 'paused' : ''].join(' ')}
+			to={`/utwor/${id}`}
+		>
+			<img
+				className="status-image"
+				alt="album cover"
+				src={album.art ?? '/media/default.png'}
+			/>
 			<span className="status-track">{title}</span>
 			<span className="status-artist">{artists.join(', ')}</span>
 			<i className="icon-info"></i>
 			<div
 				className="status-progress"
-				style={{ width: `calc(var(--max) * ${progress})` }}
+				style={{ width: `calc(var(--max) * ${elapsed})` }}
 			></div>
 		</Link>
 	)
