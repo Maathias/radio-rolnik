@@ -93,7 +93,7 @@ function Main() {
 							{
 								label: 'Utwór',
 								path: '/utwor',
-								to: `/utwor/${playing.id}`,
+								to: `/utwor/${playing.id ?? ''}`,
 								icon: 'info',
 							},
 							{ label: 'Ustawienia', to: '/ustawienia', icon: 'cog-alt' },

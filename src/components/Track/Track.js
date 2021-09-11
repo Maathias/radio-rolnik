@@ -13,7 +13,7 @@ function Track({
 	const [open, setOpen] = useState(false)
 
 	return (
-		<div className={['track', open ? 'open' : ''].join(' ')}>
+		<div className={['track', open ? 'open' : ''].join(' ')} id={id}>
 			<div className={'track-section-a ' + (timestamp || rank ? '' : 'empty')}>
 				{timestamp && <span className="track-timestamp">{timestamp}</span>}
 				{rank && <span className="track-rank">{rank}</span>}
