@@ -49,12 +49,11 @@ function Main() {
 		})
 
 		addEvent('previous', ({ trackids, timestamps }) => {
-			getMultiple(trackids).then((tracks) =>
+			getMultiple(trackids).then((tracks) => {
 				// insert timestamps to tracks
-				setPrevious(
-					tracks.map((track, i) => ({ ...track, timestamp: timestamps[i] }))
-				)
-			)
+				tracks.map((track, i) => (track.timestamp = timestamps[i]))
+				setPrevious(tracks)
+			})
 		})
 
 		addEvent('top', ({ trackids }) => {

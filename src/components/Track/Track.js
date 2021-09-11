@@ -2,15 +2,13 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import './Track.css'
 
-function Track({
-	id,
-	title = '-',
-	artists = ['-'],
-	album = {},
-	timestamp,
-	rank,
-}) {
-	const [open, setOpen] = useState(false)
+function Track({ track, timestamp, rank }) {
+	const [open, setOpen] = useState(false),
+		{ id, title = '-', artists = ['-'], album = {}, votes = {} } = track ?? {}
+
+	function vote(value) {
+		track.setVote(value).then((ok) => ok && setOpen(false))
+	}
 
 	return (
 		<div className={['track', open ? 'open' : ''].join(' ')} id={id}>
@@ -41,21 +39,32 @@ function Track({
 			</div>
 			<div className="track-more">
 				<div className="track-more-button">
-					<i className="icon-thumbs-up"></i>
+					<i
+						className="icon-thumbs-up"
+						data-set={votes.set === 'up'}
+						onClick={(e) => vote('up')}
+					></i>
 				</div>
+
 				<div className="track-more-button">
-					<i className="icon-thumbs-down"></i>
+					<i
+						className="icon-thumbs-down"
+						data-set={votes.set === 'down'}
+						onClick={(e) => vote('down')}
+					></i>
 				</div>
+
 				<Link to={`/utwor/${id}`} className="track-more-button">
 					<i className="icon-info"></i>
 				</Link>
-				<div
-					className="track-more-button"
-					onClick={() => {
-						setOpen(false)
-					}}
-				>
-					<i className="icon-cancel-circled"></i>
+
+				<div className="track-more-button">
+					<i
+						className="icon-cancel-circled"
+						onClick={() => {
+							setOpen(false)
+						}}
+					></i>
 				</div>
 			</div>
 		</div>

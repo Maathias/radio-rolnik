@@ -14,13 +14,13 @@ function History({ next, tracks }) {
 			{next && (
 				<div className="history-section next">
 					<span>Następny:</span>
-					<Track {...next} timestamp=">" />
+					<Track track={next} timestamp=">" />
 				</div>
 			)}
 
 			<div className="history-section now">
 				<span>Gra teraz:</span>
-				<Track {...playing} timestamp="~" />
+				<Track track={playing} timestamp="~" />
 			</div>
 
 			<div className="history-section previous">
@@ -30,7 +30,7 @@ function History({ next, tracks }) {
 						? new Date(track.timestamp).toISOString().slice(11, 16)
 						: '-:-'
 
-					return <Track key={track.id} {...track} timestamp={time} />
+					return <Track key={track.id} track={track} timestamp={time} />
 				})}
 			</div>
 		</div>

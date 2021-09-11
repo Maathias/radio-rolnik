@@ -74,7 +74,7 @@ function Search() {
 					</span>
 				)}
 				{results.map((track) => {
-					return <Track key={track.id} {...track} />
+					return <Track key={track.id} track={track} />
 				})}
 			</div>
 		</div>
