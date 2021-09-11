@@ -70,6 +70,7 @@
 .info-list > .buttons > i[data-set='true'] {
 	background-color: var(--light);
 	color: var(--main);
+	cursor: default;
 }
 
 .info-list > div > i:hover {

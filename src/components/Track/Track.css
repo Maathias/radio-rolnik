@@ -68,12 +68,12 @@
 
 .track-icons {
 	float: right;
-	padding: 0 0.5em;
 	margin: auto;
 }
 
 .track-icons > i {
 	cursor: pointer;
+	padding: 0.5em;
 }
 
 .track-more {
@@ -110,6 +110,12 @@
 
 .track-more-button > i {
 	width: 100%;
+}
+
+.track-more-button > i[data-set='true'] {
+	background-color: var(--dark);
+	color: var(--main);
+	cursor: default;
 }
 
 .track-more-button:hover {

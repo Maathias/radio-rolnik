@@ -17,6 +17,7 @@ class Track {
 
 	setVote(value) {
 		return new Promise((resolve, reject) => {
+			if (value === this.votes.set) return
 			ky.get(`/api/vote/${this.id}/${value}`)
 				.json()
 				.then((ok) => {

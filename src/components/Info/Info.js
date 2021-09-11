@@ -67,12 +67,12 @@ function Info() {
 						<div className="buttons">
 							<i
 								className="icon-thumbs-up"
-								data-set={track.votes.set == 'up'}
+								data-set={track.votes.set === 'up'}
 								onClick={(e) => vote('up')}
 							></i>
 							<i
 								className="icon-thumbs-down"
-								data-set={track.votes.set == 'down'}
+								data-set={track.votes.set === 'down'}
 								onClick={(e) => vote('down')}
 							></i>
 						</div>
@@ -97,7 +97,8 @@ function Info() {
 							<i
 								className="icon-flag"
 								onClick={(e) => {
-									let rly = window.confirm(`Napewno chcesz zgłosić ten utwór?`)
+									window.confirm(`Napewno chcesz zgłosić ten utwór?`) &&
+										track.setVote('report')
 								}}
 							></i>
 						</div>
