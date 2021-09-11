@@ -15,4 +15,9 @@
 .history-section.now > .track {
 	background-color: var(--main);
 	box-shadow: 2px 2px 4px #6363637d;
+	color: #fffd;
+}
+
+.history-section.now > .track .track-artist {
+	color: #fffa;
 }

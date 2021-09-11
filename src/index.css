@@ -8,7 +8,7 @@ body {
 }
 
 :root {
-	--deg: 170deg;
+	--deg: 200deg;
 	--white: hsl(0, 0%, 100%);
 	--light: hsl(var(--deg) 50% 88%);
 	--main: hsl(var(--deg), 57%, 52%);

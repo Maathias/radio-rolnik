@@ -5,7 +5,7 @@ import {
 	Redirect,
 } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import ky from 'ky'
+import FastAverageColor from 'fast-average-color'
 
 import Nav from '../Nav/Nav'
 import History from '../History/History'
@@ -25,6 +25,8 @@ document.setTitle = (prefix, suffix) => {
 	document.title = `${prefix} | ${suffix ?? 'radio-rolnik'}`
 }
 
+var fac = new FastAverageColor()
+
 function Main() {
 	const [playing, setPlaying] = useState({}),
 		[elapsed, setElapsed] = useState(0),
@@ -39,6 +41,12 @@ function Main() {
 				setPlaying(track)
 				setElapsed(progress)
 				setPaused(paused)
+
+				fac.getColorAsync(track.album.art).then(({ value: [r, g, b] }) => {
+					let color =
+						Math.atan2(1.732050808 * (g - b), 2 * r - g - b) * 57.295779513
+					document.documentElement.style.setProperty('--deg', color + 'deg')
+				})
 			})
 		})
 
