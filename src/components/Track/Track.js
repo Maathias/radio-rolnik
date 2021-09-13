@@ -12,7 +12,10 @@ function Track({ track, timestamp, rank }) {
 
 	return (
 		<div className={['track', open ? 'open' : ''].join(' ')} id={id}>
-			<div className={'track-section-a ' + (timestamp || rank ? '' : 'empty')}>
+			<div
+				className={'track-section-a ' + (timestamp || rank ? '' : 'empty')}
+				onClick={() => info()}
+			>
 				{timestamp && <span className="track-timestamp">{timestamp}</span>}
 				{rank && <span className="track-rank">{rank}</span>}
 				<img
@@ -22,10 +25,8 @@ function Track({ track, timestamp, rank }) {
 				/>
 			</div>
 
-			<div className="track-section-b">
-				<Link to={`/utwor/${id}`} className="track-title">
-					{title}
-				</Link>
+			<div className="track-section-b" onClick={() => info()}>
+				<span className="track-title">{title}</span>
 				<span className="track-artist">{artists.join(', ')}</span>
 			</div>
 

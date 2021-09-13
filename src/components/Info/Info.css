@@ -35,10 +35,12 @@
 	font-size: 0.75em;
 	background-color: var(--light);
 	margin: 1em 0;
+	display: flex;
 }
 
 .info-balance > div {
 	display: inline-block;
+	min-width: 2em;
 }
 
 .info-balance > .up {
@@ -84,4 +86,10 @@
 	color: #6666;
 	padding: 0.1em 0 0 0.5em;
 	user-select: all;
+}
+
+.info-meta {
+	padding-bottom: 0.3em;
+	font-size: 0.9em;
+	display: inline-block;
 }

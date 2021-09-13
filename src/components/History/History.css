@@ -18,6 +18,12 @@
 	color: #fffd;
 }
 
-.history-section.now > .track .track-artist {
+.history-section.now > .track .track-artist,
+.history-section.now > .track .track-timestamp {
 	color: #fffa;
+}
+
+.history-section.next > .track .track-timestamp,
+.history-section.now > .track .track-timestamp {
+	font-size: 1.25em;
 }
