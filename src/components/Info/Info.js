@@ -1,45 +1,75 @@
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useContext, useEffect, useState } from 'react'
+import { useParams, Redirect } from 'react-router-dom'
 
 import { get } from '../../Cache'
 
+import PlayingContext from '../../contexts/Playing'
+
 import './Info.css'
+
+var last
 
 function Info() {
 	const { id } = useParams(),
 		[track, setTrack] = useState({
 			title: '-',
-			votes: {},
+			stats: {},
 			album: {},
 			artists: ['-'],
 		}),
-		[meta, setMeta] = useState('...')
+		[meta, setMeta] = useState('...'),
+		playing = useContext(PlayingContext)
+
+	if (!id) last = playing.id ?? ''
+	else last = id
 
 	useEffect(() => {
-		setMeta(`Pobieranie... ${id}`)
-		get(id)
+		setMeta(`Pobieranie... ${last}`)
+		get(last)
 			.then((track) => {
-				setTrack(track)
-				setMeta(false)
+				track
+					.getStats()
+					.then((stats) => {
+						track
+							.getVote()
+							.then(() => {
+								setTrack(track)
+								setMeta(false)
+							})
+							.catch((err) => console.error(err))
+					})
+					.catch((err) => console.error(err))
 			})
 			.catch((err) => {
 				setMeta(`Wystąpił błąd przy pobieraniu informacji o utworze`)
 			})
-	}, [id])
+	}, [last]) // eslint-disable-line
+
+	if (!id && last) return <Redirect to={`/utwor/${last}`} />
 
 	function vote(value) {
 		track
 			.setVote(value)
-			.then((ok) =>
-				ok
-					? setMeta(`Zmieniono głos na ${{ up: '👎', down: '👍' }[value]}`)
-					: setMeta('Wystąpił bład przy zmienianiu głosu')
-			)
+			.then((ok) => {
+				track
+					.getStats()
+					.then(() => {
+						ok
+							? setMeta(`Zmieniono głos na ${{ up: '👍', down: '👎' }[value]}`)
+							: setMeta('Wystąpił bład przy zmienianiu głosu')
+					})
+					.catch((err) => console.error(err))
+			})
+			.catch((err) => console.error(err))
 	}
 
-	const percent = (track.votes.up / (track.votes.up + track.votes.down)) * 100
+	const total = track.stats.up + track.stats.down,
+		percent =
+			total > 0
+				? (track.stats.up / (track.stats.up + track.stats.down)) * 100
+				: 50
 
-	document.title = `${track.title} | radio-rolnik`
+	document.setTitle(track.title)
 
 	return (
 		<div className="wrapper info">
@@ -53,10 +83,10 @@ function Info() {
 				<span className="artist">{track.artists[0]}</span>
 				<div className="info-balance">
 					<div className="up" style={{ width: `${percent}%` }}>
-						{track.votes.up}&nbsp;
+						{track.stats.up}&nbsp;
 					</div>
 					<div className="down" style={{ width: `${100 - percent}%` }}>
-						{track.votes.down}
+						{track.stats.down}
 					</div>
 				</div>
 
@@ -67,15 +97,16 @@ function Info() {
 						<div className="buttons">
 							<i
 								className="icon-thumbs-up"
-								data-set={track.votes.set === 'up'}
+								data-set={track.cast === 'up'}
 								onClick={(e) => vote('up')}
 							></i>
 							<i
 								className="icon-thumbs-down"
-								data-set={track.votes.set === 'down'}
+								data-set={track.cast === 'down'}
 								onClick={(e) => vote('down')}
 							></i>
 						</div>
+
 						<div className="buttons">
 							<i
 								className="icon-export"
@@ -102,11 +133,20 @@ function Info() {
 								}}
 							></i>
 						</div>
-						<div>{`${track.title} - ${track.artists.join(', ')} - ${
-							track.album.name ?? '-'
-						} (${track.album.year ?? '-'})`}</div>
-						<div>Liczba głosów: {track.votes.up + track.votes.down}</div>
-						<div>Miejsce: #{track.votes.rank}</div>
+
+						<div>
+							<span>{track.artists.join(', ')}</span>
+						</div>
+						<div>
+							<span>
+								{track.album.name ?? '-'} ({track.album.year ?? '-'})
+							</span>
+						</div>
+
+						<div>Liczba głosów: {total}</div>
+
+						<div>Miejsce: #{track.stats.rank}</div>
+
 						{track.banned && (
 							<div>
 								<span>

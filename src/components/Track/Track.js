@@ -1,13 +1,28 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import './Track.css'
 
 function Track({ track, timestamp, rank }) {
 	const [open, setOpen] = useState(false),
-		{ id, title = '-', artists = ['-'], album = {}, votes = {} } = track ?? {}
+		{
+			id,
+			title = '-',
+			artists = ['-'],
+			album = {},
+			votes = {},
+			cast = '',
+		} = track ?? {},
+		history = useHistory()
 
 	function vote(value) {
-		track.setVote(value).then((ok) => ok && setOpen(false))
+		track
+			.setVote(value)
+			.then((ok) => ok && setOpen(false))
+			.catch((err) => console.error(err))
+	}
+
+	function info() {
+		history.push(`/utwor/${id}`)
 	}
 
 	return (
@@ -42,7 +57,7 @@ function Track({ track, timestamp, rank }) {
 				<div className="track-more-button">
 					<i
 						className="icon-thumbs-up"
-						data-set={votes.set === 'up'}
+						data-set={cast === 'up'}
 						onClick={(e) => vote('up')}
 					></i>
 				</div>
@@ -50,7 +65,7 @@ function Track({ track, timestamp, rank }) {
 				<div className="track-more-button">
 					<i
 						className="icon-thumbs-down"
-						data-set={votes.set === 'down'}
+						data-set={cast === 'down'}
 						onClick={(e) => vote('down')}
 					></i>
 				</div>

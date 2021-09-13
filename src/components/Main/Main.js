@@ -35,8 +35,6 @@ document.setTitle = (prefix, suffix) => {
 	ga.pageview(document.location.pathname)
 }
 
-var fac = new FastAverageColor()
-
 function Main() {
 	const [playing, setPlaying] = useState({}),
 		[elapsed, setElapsed] = useState(0),
@@ -47,79 +45,85 @@ function Main() {
 
 	useEffect(() => {
 		addEvent('status', ({ trackid, progress, paused }) => {
-			get(trackid).then((track) => {
-				setPlaying(track)
-				setElapsed(progress)
-				setPaused(paused)
-
-				fac.getColorAsync(track.album.art).then(({ value: [r, g, b] }) => {
-					let color =
-						Math.atan2(1.732050808 * (g - b), 2 * r - g - b) * 57.295779513
-					document.documentElement.style.setProperty('--deg', color + 'deg')
+			get(trackid)
+				.then((track) => {
+					setPlaying(track)
+					setElapsed(progress)
+					setPaused(paused)
 				})
-			})
+				.catch((err) => {
+					setPaused(true)
+				})
 		})
 
 		addEvent('next', ({ trackid }) => {
-			get(trackid).then((track) => {
-				setNext(track)
-			})
+			get(trackid)
+				.then((track) => {
+					setNext(track)
+				})
+				.catch((err) => console.error(err))
 		})
 
 		addEvent('previous', ({ trackids, timestamps }) => {
-			getMultiple(trackids).then((tracks) => {
-				// insert timestamps to tracks
-				tracks.map((track, i) => (track.timestamp = timestamps[i]))
-				setPrevious(tracks)
-			})
+			getMultiple(trackids)
+				.then((tracks) => {
+					// insert timestamps to tracks
+					tracks.map((track, i) => (track.timestamp = timestamps[i]))
+					setPrevious(tracks)
+				})
+				.catch((err) => console.error(err))
 		})
 
 		addEvent('top', ({ trackids }) => {
-			getMultiple(trackids).then((tracks) => setTop(tracks))
+			getMultiple(trackids)
+				.then((tracks) => setTop(tracks))
+				.catch((err) => console.error(err))
 		})
 	}, [])
 
 	return (
-		<PlayingContext.Provider value={playing}>
-			<div className="main">
-				<Router>
-					<Switch>
-						<Route exact path="/">
-							<History next={next} tracks={previous} />
-						</Route>
+		<GaContext.Provider value={ga}>
+			<PlayingContext.Provider value={playing}>
+				<div className="main">
+					<Router>
+						<Switch>
+							<Route exact path="/">
+								<History next={next} tracks={previous} />
+							</Route>
 
-						<Route path="/utwor/:id">
-							<Info />
-						</Route>
+							<Route path="/utwor/:id?">
+								<Info />
+							</Route>
 
-						<Route path="/top">
-							<Top tracks={top} />
-						</Route>
+							<Route path="/top">
+								<Top tracks={top} />
+							</Route>
 
-						<Route path="/wyszukaj/:query?">
-							<Search />
-						</Route>
+							<Route path="/wyszukaj/:query?">
+								<Search />
+							</Route>
 
-						<Route render={() => <Redirect to="/" />} />
-					</Switch>
-					<Nav
-						buttons={[
-							{ label: 'Historia', to: '/', icon: 'align-left' },
-							{ label: 'Wyszukaj', to: '/wyszukaj', icon: 'search' },
-							{ label: 'Top', to: '/top', icon: 'list-numbered' },
-							{
-								label: 'Utwór',
-								path: '/utwor',
-								to: `/utwor/${playing.id ?? ''}`,
-								icon: 'info',
-							},
-							{ label: 'Ustawienia', to: '/ustawienia', icon: 'cog-alt' },
-						]}
-					/>
-					<Status progress={elapsed} paused={paused} />
-				</Router>
-			</div>
-		</PlayingContext.Provider>
+							<Route render={() => <Redirect to="/" />} />
+						</Switch>
+						<Nav
+							buttons={[
+								{ label: 'Historia', to: '/', icon: 'align-left' },
+								{ label: 'Wyszukaj', to: '/wyszukaj', icon: 'search' },
+								{ label: 'Top', to: '/top', icon: 'list-numbered' },
+								{
+									label: 'Utwór',
+									path: '/utwor',
+									to: `/utwor`,
+									icon: 'info',
+								},
+								{ label: 'Ustawienia', to: '/ustawienia', icon: 'cog-alt' },
+							]}
+						/>
+						<Status progress={elapsed} paused={paused} />
+					</Router>
+				</div>
+			</PlayingContext.Provider>
+		</GaContext.Provider>
 	)
 }
 

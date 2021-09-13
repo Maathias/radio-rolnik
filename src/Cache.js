@@ -5,6 +5,15 @@ var tracks = {}
 class Track {
 	constructor(tdata) {
 		Object.assign(this, tdata)
+
+		this.stats = {
+			up: -1,
+			down: -1,
+		}
+		this.rank = -1
+		this.cast = ''
+
+		this.getVote()
 	}
 
 	get listen() {
@@ -12,17 +21,18 @@ class Track {
 	}
 
 	get share() {
-		return `https://radio-rolnik.mtps.pl/utwor/${this.id}`
+		return `https://${document.location.origin}/utwor/${this.id}`
 	}
 
 	setVote(value) {
 		return new Promise((resolve, reject) => {
-			if (value === this.votes.set) return
-			ky.get(`/api/vote/${this.id}/${value}`)
+			if (value === this.cast) return
+			ky.patch(`/api/vote/${this.id}`, { json: { uid: 'mathias', value } })
 				.json()
 				.then((ok) => {
 					if (ok) {
-						this.votes.set = value
+						this.cast = value
+						this.getStats()
 					}
 					resolve(ok)
 				})
@@ -30,22 +40,40 @@ class Track {
 		})
 	}
 
-	getVotes() {
+	getVote() {
 		return new Promise((resolve, reject) => {
-			getVotes(this.id).then((votes) => {
-				this.votes = votes
-				resolve(votes)
-			})
+			ky.get(`/api/vote/${this.id}/cast`, { searchParams: { uid: 'mathias' } })
+				.text()
+				.then((cast) => {
+					this.cast = cast
+					resolve(cast)
+				})
+				.catch((err) => {
+					console.error(err)
+				})
+		})
+	}
+
+	getStats() {
+		return new Promise((resolve, reject) => {
+			getStats(this.id)
+				.then((stats) => {
+					this.stats = stats
+					resolve(stats)
+				})
+				.catch((err) => {
+					console.error(err)
+				})
 		})
 	}
 }
 
-function getVotes(id) {
+function getStats(id) {
 	return new Promise((resolve, reject) => {
-		ky.get(`/api/track/${id}?votes`)
+		ky.get(`/api/vote/${id}`)
 			.json()
-			.then((votes) => {
-				resolve(votes)
+			.then((stats) => {
+				resolve(stats)
 			})
 			.catch((err) => reject(err))
 	})
@@ -63,7 +91,11 @@ function get(id) {
 
 function getMultiple(ids) {
 	return new Promise((resolve, reject) => {
-		Promise.all(ids.map((id) => get(id))).then((tracks) => resolve(tracks))
+		Promise.all(ids.map((id) => get(id)))
+			.then((tracks) => resolve(tracks))
+			.catch((err) => {
+				console.error(err)
+			})
 	})
 }
 
@@ -88,4 +120,4 @@ function search(query) {
 	})
 }
 
-export { tracks, get, getMultiple, search }
+export { tracks, get, getMultiple, search, getStats }
