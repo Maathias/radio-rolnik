@@ -5,7 +5,7 @@ import {
 	Redirect,
 } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import FastAverageColor from 'fast-average-color'
+import ga from 'react-ga'
 
 import Nav from '../Nav/Nav'
 import History from '../History/History'
@@ -18,11 +18,21 @@ import { get, getMultiple } from '../../Cache'
 import { addEvent } from '../../socket'
 
 import PlayingContext from '../../contexts/Playing'
+import GaContext from '../../contexts/Ga'
 
 import './Main.css'
 
+ga.initialize('UA-150749288-3')
+
 document.setTitle = (prefix, suffix) => {
-	document.title = `${prefix} | ${suffix ?? 'radio-rolnik'}`
+	const title = `${prefix} | ${suffix ?? 'radio-rolnik'}`
+
+	// dont repeat same title
+	if (document.title === title) return
+
+	document.title = title
+
+	ga.pageview(document.location.pathname)
 }
 
 var fac = new FastAverageColor()
