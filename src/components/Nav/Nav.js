@@ -46,7 +46,7 @@ function Nav({ buttons }) {
 		})()
 
 		// don't update for custom titles
-		label && (document.title = `${label} | radio-rolnik`)
+		label && document.setTitle(label)
 	}, [location]) // eslint-disable-line
 
 	return (

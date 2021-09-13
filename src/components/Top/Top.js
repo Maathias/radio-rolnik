@@ -6,7 +6,7 @@ function Top(props) {
 	return (
 		<div className="wrapper top">
 			{props.tracks.map((track, rank) => {
-				return <Track key={track.id} rank={rank + 1} {...track} />
+				return <Track key={track.id} rank={rank + 1} track={track} />
 			})}
 		</div>
 	)

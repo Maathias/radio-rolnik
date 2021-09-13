@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
+import { setColor } from '../../Color'
+
 import PlayingContext from '../../contexts/Playing'
 
 import './Status.css'
 
-function Status({ progress, paused, onEnd }) {
+function Status({ progress, paused }) {
 	const {
 			id,
 			title = '-',
@@ -17,6 +19,10 @@ function Status({ progress, paused, onEnd }) {
 
 	const step = 500,
 		tread = step / duration
+
+	useEffect(() => {
+		if (album.art) setColor(album.art, 1)
+	}, [album.art])
 
 	useEffect(() => {
 		setElapsed(progress ? progress / duration : 0)

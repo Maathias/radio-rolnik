@@ -5,7 +5,7 @@ import {
 	Redirect,
 } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import ky from 'ky'
+import ga from 'react-ga'
 
 import Nav from '../Nav/Nav'
 import History from '../History/History'
@@ -18,11 +18,21 @@ import { get, getMultiple } from '../../Cache'
 import { addEvent } from '../../socket'
 
 import PlayingContext from '../../contexts/Playing'
+import GaContext from '../../contexts/Ga'
 
 import './Main.css'
 
+ga.initialize('UA-150749288-3')
+
 document.setTitle = (prefix, suffix) => {
-	document.title = `${prefix} | ${suffix ?? 'radio-rolnik'}`
+	const title = `${prefix} | ${suffix ?? 'radio-rolnik'}`
+
+	// dont repeat same title
+	if (document.title === title) return
+
+	document.title = title
+
+	ga.pageview(document.location.pathname)
 }
 
 function Main() {
@@ -35,74 +45,85 @@ function Main() {
 
 	useEffect(() => {
 		addEvent('status', ({ trackid, progress, paused }) => {
-			get(trackid).then((track) => {
-				setPlaying(track)
-				setElapsed(progress)
-				setPaused(paused)
-			})
+			get(trackid)
+				.then((track) => {
+					setPlaying(track)
+					setElapsed(progress)
+					setPaused(paused)
+				})
+				.catch((err) => {
+					setPaused(true)
+				})
 		})
 
 		addEvent('next', ({ trackid }) => {
-			get(trackid).then((track) => {
-				setNext(track)
-			})
+			get(trackid)
+				.then((track) => {
+					setNext(track)
+				})
+				.catch((err) => console.error(err))
 		})
 
 		addEvent('previous', ({ trackids, timestamps }) => {
-			getMultiple(trackids).then((tracks) =>
-				// insert timestamps to tracks
-				setPrevious(
-					tracks.map((track, i) => ({ ...track, timestamp: timestamps[i] }))
-				)
-			)
+			getMultiple(trackids)
+				.then((tracks) => {
+					// insert timestamps to tracks
+					tracks.map((track, i) => (track.timestamp = timestamps[i]))
+					setPrevious(tracks)
+				})
+				.catch((err) => console.error(err))
 		})
 
 		addEvent('top', ({ trackids }) => {
-			getMultiple(trackids).then((tracks) => setTop(tracks))
+			getMultiple(trackids)
+				.then((tracks) => setTop(tracks))
+				.catch((err) => console.error(err))
 		})
 	}, [])
 
 	return (
-		<PlayingContext.Provider value={playing}>
-			<div className="main">
-				<Router>
-					<Switch>
-						<Route exact path="/">
-							<History next={next} tracks={previous} />
-						</Route>
+		<GaContext.Provider value={ga}>
+			<PlayingContext.Provider value={playing}>
+				<div className="main">
+					<Router>
+						<Switch>
+							<Route exact path="/">
+								<History next={next} tracks={previous} />
+							</Route>
 
-						<Route path="/utwor/:id">
-							<Info />
-						</Route>
+							<Route path="/utwor/:id?">
+								<Info />
+							</Route>
 
-						<Route path="/top">
-							<Top tracks={top} />
-						</Route>
+							<Route path="/top">
+								<Top tracks={top} />
+							</Route>
 
-						<Route path="/wyszukaj/:query?">
-							<Search />
-						</Route>
+							<Route path="/wyszukaj/:query?">
+								<Search />
+							</Route>
 
-						<Route render={() => <Redirect to="/" />} />
-					</Switch>
-					<Nav
-						buttons={[
-							{ label: 'Historia', to: '/', icon: 'align-left' },
-							{ label: 'Wyszukaj', to: '/wyszukaj', icon: 'search' },
-							{ label: 'Top', to: '/top', icon: 'list-numbered' },
-							{
-								label: 'Utwór',
-								path: '/utwor',
-								to: `/utwor/${playing.id}`,
-								icon: 'info',
-							},
-							{ label: 'Ustawienia', to: '/ustawienia', icon: 'cog-alt' },
-						]}
-					/>
-					<Status progress={elapsed} paused={paused} />
-				</Router>
-			</div>
-		</PlayingContext.Provider>
+							<Route render={() => <Redirect to="/" />} />
+						</Switch>
+						<Nav
+							buttons={[
+								{ label: 'Historia', to: '/', icon: 'align-left' },
+								{ label: 'Wyszukaj', to: '/wyszukaj', icon: 'search' },
+								{ label: 'Top', to: '/top', icon: 'list-numbered' },
+								{
+									label: 'Utwór',
+									path: '/utwor',
+									to: `/utwor`,
+									icon: 'info',
+								},
+								{ label: 'Ustawienia', to: '/ustawienia', icon: 'cog-alt' },
+							]}
+						/>
+						<Status progress={elapsed} paused={paused} />
+					</Router>
+				</div>
+			</PlayingContext.Provider>
+		</GaContext.Provider>
 	)
 }
 

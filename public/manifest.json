@@ -1,25 +1,26 @@
 {
-	"short_name": "React App",
-	"name": "Create React App Sample",
+	"version": "1.3.0",
+	"short_name": "radio-rolnik",
+	"name": "Radio Rolnik Nysa",
+	"description": "",
 	"icons": [
 		{
-			"src": "favicon.ico",
-			"sizes": "64x64 32x32 24x24 16x16",
-			"type": "image/x-icon"
+			"src": "/media/icon_512.png",
+			"type": "image/png",
+			"sizes": "512x512",
+			"purpose": "maskable"
 		},
 		{
-			"src": "logo192.png",
+			"src": "/media/icon_256.png",
 			"type": "image/png",
-			"sizes": "192x192"
-		},
-		{
-			"src": "logo512.png",
-			"type": "image/png",
-			"sizes": "512x512"
+			"sizes": "256x256"
 		}
 	],
-	"start_url": ".",
+	"start_url": "/",
+	"scope": "/",
 	"display": "standalone",
-	"theme_color": "#000000",
-	"background_color": "#ffffff"
+	"orientation": "portrait",
+	"background_color": "#313131",
+	"theme_color": "#ca3e47",
+	"lang": "pl"
 }

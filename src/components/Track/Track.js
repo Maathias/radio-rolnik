@@ -1,20 +1,36 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import './Track.css'
 
-function Track({
-	id,
-	title = '-',
-	artists = ['-'],
-	album = {},
-	timestamp,
-	rank,
-}) {
-	const [open, setOpen] = useState(false)
+function Track({ track, timestamp, rank }) {
+	const [open, setOpen] = useState(false),
+		{
+			id,
+			title = '-',
+			artists = ['-'],
+			album = {},
+			votes = {},
+			cast = '',
+		} = track ?? {},
+		history = useHistory()
+
+	function vote(value) {
+		track
+			.setVote(value)
+			.then((ok) => ok && setOpen(false))
+			.catch((err) => console.error(err))
+	}
+
+	function info() {
+		history.push(`/utwor/${id}`)
+	}
 
 	return (
-		<div className={['track', open ? 'open' : ''].join(' ')}>
-			<div className={'track-section-a ' + (timestamp || rank ? '' : 'empty')}>
+		<div className={['track', open ? 'open' : ''].join(' ')} id={id}>
+			<div
+				className={'track-section-a ' + (timestamp || rank ? '' : 'empty')}
+				onClick={() => info()}
+			>
 				{timestamp && <span className="track-timestamp">{timestamp}</span>}
 				{rank && <span className="track-rank">{rank}</span>}
 				<img
@@ -24,10 +40,8 @@ function Track({
 				/>
 			</div>
 
-			<div className="track-section-b">
-				<Link to={`/utwor/${id}`} className="track-title">
-					{title}
-				</Link>
+			<div className="track-section-b" onClick={() => info()}>
+				<span className="track-title">{title}</span>
 				<span className="track-artist">{artists.join(', ')}</span>
 			</div>
 
@@ -41,21 +55,32 @@ function Track({
 			</div>
 			<div className="track-more">
 				<div className="track-more-button">
-					<i className="icon-thumbs-up"></i>
+					<i
+						className="icon-thumbs-up"
+						data-set={cast === 'up'}
+						onClick={(e) => vote('up')}
+					></i>
 				</div>
+
 				<div className="track-more-button">
-					<i className="icon-thumbs-down"></i>
+					<i
+						className="icon-thumbs-down"
+						data-set={cast === 'down'}
+						onClick={(e) => vote('down')}
+					></i>
 				</div>
+
 				<Link to={`/utwor/${id}`} className="track-more-button">
 					<i className="icon-info"></i>
 				</Link>
-				<div
-					className="track-more-button"
-					onClick={() => {
-						setOpen(false)
-					}}
-				>
-					<i className="icon-cancel-circled"></i>
+
+				<div className="track-more-button">
+					<i
+						className="icon-cancel-circled"
+						onClick={() => {
+							setOpen(false)
+						}}
+					></i>
 				</div>
 			</div>
 		</div>
