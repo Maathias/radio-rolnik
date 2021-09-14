@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
+
 import './Track.css'
+import def from '../../media/default.png'
 
 function Track({ track, timestamp, rank }) {
 	const [open, setOpen] = useState(false),
@@ -33,11 +35,7 @@ function Track({ track, timestamp, rank }) {
 			>
 				{timestamp && <span className="track-timestamp">{timestamp}</span>}
 				{rank && <span className="track-rank">{rank}</span>}
-				<img
-					className="track-image"
-					src={album.art ?? '/media/default.png'}
-					alt="album cover"
-				/>
+				<img className="track-image" src={album.art ?? def} alt="album cover" />
 			</div>
 
 			<div className="track-section-b" onClick={() => info()}>

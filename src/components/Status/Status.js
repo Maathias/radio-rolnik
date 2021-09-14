@@ -6,6 +6,7 @@ import { setColor } from '../../Color'
 import PlayingContext from '../../contexts/Playing'
 
 import './Status.css'
+import def from '../../media/default.png'
 
 function Status({ progress, paused }) {
 	const {
@@ -52,11 +53,7 @@ function Status({ progress, paused }) {
 			className={['status', paused ? 'paused' : ''].join(' ')}
 			to={`/utwor/${id}`}
 		>
-			<img
-				className="status-image"
-				alt="album cover"
-				src={album.art ?? '/media/default.png'}
-			/>
+			<img className="status-image" alt="album cover" src={album.art ?? def} />
 			<span className="status-track">{title}</span>
 			<span className="status-artist">{artists.join(', ')}</span>
 			<i className="icon-info"></i>

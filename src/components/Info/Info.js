@@ -6,6 +6,7 @@ import { get } from '../../Cache'
 import PlayingContext from '../../contexts/Playing'
 
 import './Info.css'
+import def from '../../media/default.png'
 
 var last
 
@@ -74,7 +75,7 @@ function Info() {
 	return (
 		<div className="wrapper info">
 			<img
-				src={track.album.art ?? '/media/default.png'}
+				src={track.album.art ?? def}
 				className="info-image"
 				alt="album cover"
 			/>
