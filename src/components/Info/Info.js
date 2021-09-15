@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 import { useParams, Redirect } from 'react-router-dom'
 
+import Modal from '../Modal/Modal'
+
 import { get } from '../../Cache'
 
 import PlayingContext from '../../contexts/Playing'
@@ -19,6 +21,7 @@ function Info() {
 			artists: ['-'],
 		}),
 		[meta, setMeta] = useState('...'),
+		[showModal, setShowModal] = useState(true),
 		playing = useContext(PlayingContext)
 
 	if (!id) last = playing.id ?? ''
@@ -71,6 +74,11 @@ function Info() {
 				: 50
 
 	document.setTitle(track.title)
+
+	const toggleModal = () => setShowModal(!showModal)
+	const report = () => {
+		track.setVote('report')
+	}
 
 	return (
 		<div className="wrapper info">
@@ -129,8 +137,7 @@ function Info() {
 							<i
 								className="icon-flag"
 								onClick={(e) => {
-									window.confirm(`Napewno chcesz zgłosić ten utwór?`) &&
-										track.setVote('report')
+									toggleModal()
 								}}
 							></i>
 						</div>
@@ -159,6 +166,27 @@ function Info() {
 				)}
 			</div>
 			<span className="info-data">{id}</span>
+			{showModal ? (
+				<Modal>
+					<div className="modal-text">
+						<div>
+							Czy na pewno chcesz zgłosić utwór{' '}
+							<i>
+								<b>{track.title}</b>
+							</i>
+							?
+						</div>
+					</div>
+					<div className="modal-buttons-2">
+						<button onClick={toggleModal} className="modal-button">
+							Nie
+						</button>
+						<button onClick={report} className="modal-button">
+							Tak
+						</button>
+					</div>
+				</Modal>
+			) : null}
 		</div>
 	)
 }
