@@ -5,13 +5,14 @@
 	justify-content: flex-end;
 	background-color: var(--light);
 	font-family: 'Quicksand';
-	overflow: hidden;
+	overflow: hidden auto;
 }
 
 .wrapper {
 	max-width: 600px;
+	/* max-height: 100%; */
 	margin: auto;
 	box-sizing: border-box;
 	padding-bottom: 8em;
-	overflow-y: auto;
+	/* overflow-y: auto; */
 }

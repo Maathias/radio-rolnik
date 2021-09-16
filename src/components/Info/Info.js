@@ -81,8 +81,10 @@ function Info() {
 			/>
 			<div className="info-wrapper">
 				<span className="title">{track.title}</span>
+
 				<span className="artist">{track.artists[0]}</span>
-				<div className="info-balance">
+
+				<div className="info-balance" disabled={total < 1}>
 					<div className="up" style={{ width: `${percent}%` }}>
 						{track.stats.up}&nbsp;
 					</div>
@@ -144,14 +146,27 @@ function Info() {
 							</span>
 						</div>
 
-						<div>Liczba głosów: {total}</div>
+						<div>
+							<i className="icon-thumbs-up"></i> Liczba głosów: {total}
+						</div>
 
-						<div>Miejsce: #{track.stats.rank}</div>
+						<div>
+							<i className="icon-list-numbered"></i> Miejsce:&nbsp;
+							<span>#{track.stats.rank}</span>
+						</div>
 
 						{track.banned && (
 							<div>
 								<span>
-									Utwór zablokowany <i className="icon-cancel-circled"></i>
+									<i className="icon-cancel-circled"></i> Utwór zablokowany
+								</span>
+							</div>
+						)}
+
+						{track.explicit && (
+							<div>
+								<span>
+									<i className="icon-cancel-circled"></i> Przekleństwa
 								</span>
 							</div>
 						)}

@@ -6,14 +6,7 @@ import def from '../../media/default.png'
 
 function Track({ track, timestamp, rank }) {
 	const [open, setOpen] = useState(false),
-		{
-			id,
-			title = '-',
-			artists = ['-'],
-			album = {},
-			votes = {},
-			cast = '',
-		} = track ?? {},
+		{ id, title = '-', artists = ['-'], album = {}, cast = '' } = track ?? {},
 		history = useHistory()
 
 	function vote(value) {

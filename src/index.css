@@ -14,3 +14,18 @@ body {
 	--main: hsl(var(--deg), 57%, 52%);
 	--dark: hsl(var(--deg) 55% 22%);
 }
+
+@media (pointer: fine) {
+	::-webkit-scrollbar-track {
+		border-radius: 10px;
+	}
+
+	::-webkit-scrollbar {
+		width: 0.5em;
+	}
+
+	::-webkit-scrollbar-thumb {
+		border-radius: 3px;
+		background-color: var(--main);
+	}
+}
