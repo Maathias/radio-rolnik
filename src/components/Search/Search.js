@@ -1,7 +1,7 @@
 import { createRef, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 
-import Track from '../Track/Track'
+import Track, { Tracklist } from '../Track/Track'
 import { getMultiple, search } from '../../Cache'
 
 import './Search.css'
@@ -12,13 +12,16 @@ function Search() {
 	const { query } = useParams(),
 		[results, setResults] = useState([]),
 		[meta, setMeta] = useState(''),
-		input = createRef()
+		input = createRef(),
+		history = useHistory()
 
 	function run(query) {
 		query = query.trim()
 		if (query.length < 1) return
 
 		setMeta(`Wyszukiwanie...`)
+
+		history.replace(`/wyszukaj/${query}`)
 
 		search(query)
 			.then(({ tracks, total }) => {
@@ -73,9 +76,11 @@ function Search() {
 						{meta}
 					</span>
 				)}
-				{results.map((track) => {
-					return <Track key={track.id} track={track} />
-				})}
+				<Tracklist>
+					{results.map((track) => {
+						return <Track key={track.id} track={track} />
+					})}
+				</Tracklist>
 			</div>
 		</div>
 	)

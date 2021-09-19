@@ -1,18 +1,38 @@
-import { useState } from 'react'
+import { useState, createContext, useContext } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 
 import './Track.css'
 import def from '../../media/default.png'
 
-function Track({ track, timestamp, rank }) {
-	const [open, setOpen] = useState(false),
-		{ id, title = '-', artists = ['-'], album = {}, cast = '' } = track ?? {},
-		history = useHistory()
+const TracklistContext = createContext({})
+
+function Tracklist({ children }) {
+	const [active, setActive] = useState(''),
+		value = { active, setActive }
+
+	return (
+		<TracklistContext.Provider value={value}>
+			{children}
+		</TracklistContext.Provider>
+	)
+}
+
+function Track({ track, timestamp, displayRank = false }) {
+	const {
+			id,
+			title = '-',
+			artists = ['-'],
+			album = {},
+			cast = '',
+			stats = {},
+		} = track ?? {},
+		history = useHistory(),
+		tracklist = useContext(TracklistContext)
 
 	function vote(value) {
 		track
 			.setVote(value)
-			.then((ok) => ok && setOpen(false))
+			.then((ok) => ok && tracklist.setActive(false))
 			.catch((err) => console.error(err))
 	}
 
@@ -21,13 +41,18 @@ function Track({ track, timestamp, rank }) {
 	}
 
 	return (
-		<div className={['track', open ? 'open' : ''].join(' ')} id={id}>
+		<div
+			className={['track', tracklist.active === id ? 'open' : ''].join(' ')}
+			id={id}
+		>
 			<div
-				className={'track-section-a ' + (timestamp || rank ? '' : 'empty')}
+				className={
+					'track-section-a ' + (timestamp || displayRank ? '' : 'empty')
+				}
 				onClick={() => info()}
 			>
 				{timestamp && <span className="track-timestamp">{timestamp}</span>}
-				{rank && <span className="track-rank">{rank}</span>}
+				{displayRank && <span className="track-rank">{stats.rank}</span>}
 				<img className="track-image" src={album.art ?? def} alt="album cover" />
 			</div>
 
@@ -40,25 +65,17 @@ function Track({ track, timestamp, rank }) {
 				<i
 					className="icon-ellipsis-vert"
 					onClick={() => {
-						setOpen(true)
+						tracklist.setActive(id)
 					}}
 				></i>
 			</div>
 			<div className="track-more">
-				<div className="track-more-button">
-					<i
-						className="icon-thumbs-up"
-						data-set={cast === 'up'}
-						onClick={(e) => vote('up')}
-					></i>
+				<div className="track-more-button" data-set={cast === 'up'}>
+					<i className="icon-thumbs-up" onClick={(e) => vote('up')}></i>
 				</div>
 
-				<div className="track-more-button">
-					<i
-						className="icon-thumbs-down"
-						data-set={cast === 'down'}
-						onClick={(e) => vote('down')}
-					></i>
+				<div className="track-more-button" data-set={cast === 'down'}>
+					<i className="icon-thumbs-down" onClick={(e) => vote('down')}></i>
 				</div>
 
 				<Link to={`/utwor/${id}`} className="track-more-button">
@@ -69,7 +86,7 @@ function Track({ track, timestamp, rank }) {
 					<i
 						className="icon-cancel-circled"
 						onClick={() => {
-							setOpen(false)
+							tracklist.setActive(false)
 						}}
 					></i>
 				</div>
@@ -79,3 +96,4 @@ function Track({ track, timestamp, rank }) {
 }
 
 export default Track
+export { Track, Tracklist }

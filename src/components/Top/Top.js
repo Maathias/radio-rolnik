@@ -1,13 +1,24 @@
-import Track from '../Track/Track'
+import Track, { Tracklist } from '../Track/Track'
 
 import './Top.css'
 
-function Top(props) {
+function Top({ tracks, timestamp }) {
+	const date = timestamp ?? new Date(),
+		weekName = ['Poniedziak', 'Wtorek', 'Środa', 'Czwartek', 'Piątek'][
+			date.getDay()
+		],
+		day = date.toLocaleString('pl-PL')
+
 	return (
 		<div className="wrapper top">
-			{props.tracks.map((track, rank) => {
-				return <Track key={track.id} rank={rank + 1} track={track} />
-			})}
+			<span className="top-header">
+				TOP: {weekName} {timestamp ? day : '-'}
+			</span>
+			<Tracklist>
+				{tracks.map((track, rank) => {
+					return <Track key={track.id} track={track} displayRank={true} />
+				})}
+			</Tracklist>
 		</div>
 	)
 }
