@@ -18,10 +18,10 @@
 
 .info-wrapper {
 	border-radius: 0.5em;
-	background: linear-gradient(180deg, white, transparent);
 	height: 100%;
 	padding: 1em;
 	box-shadow: 0 -1px 11px 2px #6b6b6b52;
+	background-color: hsl(var(--deg) 4% 98% / 70%);
 }
 
 .info-wrapper > .title {
@@ -31,7 +31,7 @@
 
 .info-balance {
 	width: 100%;
-	font-size: 0.75em;
+	font-family: monospace;
 	background-color: var(--light);
 	margin: 1em 0;
 	display: flex;

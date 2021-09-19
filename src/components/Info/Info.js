@@ -86,7 +86,7 @@ function Info() {
 
 				<div className="info-balance" disabled={total < 1}>
 					<div className="up" style={{ width: `${percent}%` }}>
-						{track.stats.up}&nbsp;
+						{track.stats.up}
 					</div>
 					<div className="down" style={{ width: `${100 - percent}%` }}>
 						{track.stats.down}
@@ -146,14 +146,19 @@ function Info() {
 							</span>
 						</div>
 
-						<div>
-							<i className="icon-thumbs-up"></i> Liczba głosów: {total}
-						</div>
+						{total > 0 && (
+							<div>
+								<i className="icon-thumbs-up"></i> Liczba głosów:&nbsp;
+								<strong>{total}</strong>
+							</div>
+						)}
 
-						<div>
-							<i className="icon-list-numbered"></i> Miejsce:&nbsp;
-							<span>#{track.stats.rank}</span>
-						</div>
+						{track.stats.rank > 0 && (
+							<div>
+								<i className="icon-list-numbered"></i> Miejsce:&nbsp;
+								<strong>#{track.stats.rank}</strong>
+							</div>
+						)}
 
 						{track.banned && (
 							<div>

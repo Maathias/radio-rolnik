@@ -3,7 +3,6 @@
 .main {
 	height: 100vh;
 	justify-content: flex-end;
-	background-color: var(--light);
 	font-family: 'Quicksand';
 	overflow: hidden auto;
 }

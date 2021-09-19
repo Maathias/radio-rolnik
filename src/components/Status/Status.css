@@ -1,16 +1,19 @@
 .status {
 	position: fixed;
 	bottom: 3.5rem;
-	left: 2.5%;
+	left: 0;
+	right: 0;
 	width: 95%;
 	background: var(--dark);
 	color: var(--white);
 	padding: 0.5em;
 	border-radius: 0.5em;
 	box-sizing: border-box;
-	box-shadow: 0 2px 8px 1px #00000063;
+	box-shadow: 0 2px 8px 1px #0006;
 	z-index: 10;
 	text-decoration: none;
+	max-width: 700px;
+	margin: auto;
 }
 
 .status-image {
@@ -25,6 +28,9 @@
 	font-size: 1.1em;
 	display: block;
 	font-weight: bold;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 .status-artist {
@@ -47,7 +53,7 @@
 	bottom: 0;
 	border-bottom: 2px solid white;
 	border-radius: 2px;
-	transition: 0.5s linear width, 0.3s ease-out opacity;
+	transition: 1s linear width, 0.3s ease-out opacity;
 }
 
 .status-progress:after {
