@@ -13,8 +13,9 @@ import Status from '../Status/Status'
 import Info from '../Info/Info'
 import Top from '../Top/Top'
 import Search from '../Search/Search'
+import Settings from '../Settings/Settings'
 
-import { get, getMultiple } from '../../Cache'
+import { get, getMultiple, getMultipleStats } from '../../Cache'
 import { addEvent } from '../../socket'
 
 import PlayingContext from '../../contexts/Playing'
@@ -41,7 +42,8 @@ function Main() {
 		[paused, setPaused] = useState(true),
 		[next, setNext] = useState(),
 		[previous, setPrevious] = useState([]),
-		[top, setTop] = useState([])
+		[top, setTop] = useState([]),
+		[topDate, setTopDate] = useState()
 
 	useEffect(() => {
 		addEvent('status', ({ trackid, progress, paused }) => {
@@ -74,10 +76,26 @@ function Main() {
 				.catch((err) => console.error(err))
 		})
 
-		addEvent('top', ({ trackids }) => {
-			getMultiple(trackids)
-				.then((tracks) => setTop(tracks))
-				.catch((err) => console.error(err))
+		addEvent('top', ({ trackids, timestamp }) => {
+			Promise.all([getMultiple(trackids), getMultipleStats(trackids)]).then(
+				([tracks, stats]) => {
+					tracks.map((track, i) => (track.stats = stats[i]))
+					setTop(tracks)
+					setTopDate(new Date(timestamp))
+				}
+			)
+			// getMultiple(trackids)
+			// 	.then((tracks) => {
+			// 		Promise.all(tracks.map((track) => track.getStats()))
+			// 			.then(() => {
+			// 				setTop(tracks)
+			// 				setTopDate(new Date(timestamp))
+			// 			})
+			// 			.catch((err) => {
+			// 				console.error(err)
+			// 			})
+			// 	})
+			// 	.catch((err) => console.error(err))
 		})
 	}, [])
 
@@ -96,11 +114,15 @@ function Main() {
 							</Route>
 
 							<Route path="/top">
-								<Top tracks={top} />
+								<Top tracks={top} timestamp={topDate} />
 							</Route>
 
 							<Route path="/wyszukaj/:query?">
 								<Search />
+							</Route>
+
+							<Route path="/ustawienia">
+								<Settings />
 							</Route>
 
 							<Route render={() => <Redirect to="/" />} />

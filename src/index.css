@@ -15,6 +15,7 @@ body {
 
 #root {
 	backdrop-filter: blur(6px);
+	height: 100vh;
 }
 
 :root {

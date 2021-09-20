@@ -23,7 +23,6 @@ function Track({ track, timestamp, displayRank = false }) {
 			title = '-',
 			artists = ['-'],
 			album = {},
-			cast = '',
 			stats = {},
 		} = track ?? {},
 		history = useHistory(),
@@ -70,11 +69,11 @@ function Track({ track, timestamp, displayRank = false }) {
 				></i>
 			</div>
 			<div className="track-more">
-				<div className="track-more-button" data-set={cast === 'up'}>
+				<div className="track-more-button" data-set={stats.cast === 'up'}>
 					<i className="icon-thumbs-up" onClick={(e) => vote('up')}></i>
 				</div>
 
-				<div className="track-more-button" data-set={cast === 'down'}>
+				<div className="track-more-button" data-set={stats.cast === 'down'}>
 					<i className="icon-thumbs-down" onClick={(e) => vote('down')}></i>
 				</div>
 

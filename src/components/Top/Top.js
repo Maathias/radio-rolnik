@@ -4,9 +4,15 @@ import './Top.css'
 
 function Top({ tracks, timestamp }) {
 	const date = timestamp ?? new Date(),
-		weekName = ['Poniedziak', 'Wtorek', 'Środa', 'Czwartek', 'Piątek'][
-			date.getDay()
-		],
+		weekName = [
+			'Niedziela',
+			'Poniedziałek',
+			'Wtorek',
+			'Środa',
+			'Czwartek',
+			'Piątek',
+			'Sobota',
+		][date.getDay()],
 		day = date.toLocaleString('pl-PL')
 
 	return (

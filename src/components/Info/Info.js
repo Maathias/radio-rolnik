@@ -31,13 +31,8 @@ function Info() {
 				track
 					.getStats()
 					.then((stats) => {
-						track
-							.getVote()
-							.then(() => {
-								setTrack(track)
-								setMeta(false)
-							})
-							.catch((err) => console.error(err))
+						setTrack(track)
+						setMeta(false).catch((err) => console.error(err))
 					})
 					.catch((err) => console.error(err))
 			})
@@ -100,12 +95,12 @@ function Info() {
 						<div className="buttons">
 							<i
 								className="icon-thumbs-up"
-								data-set={track.cast === 'up'}
+								data-set={track.stats.cast === 'up'}
 								onClick={(e) => vote('up')}
 							></i>
 							<i
 								className="icon-thumbs-down"
-								data-set={track.cast === 'down'}
+								data-set={track.stats.cast === 'down'}
 								onClick={(e) => vote('down')}
 							></i>
 						</div>
