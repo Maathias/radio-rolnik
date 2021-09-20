@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { setColor } from '../../Color'
+import { socket } from '../../socket'
 
 import PlayingContext from '../../contexts/Playing'
 
@@ -18,7 +19,7 @@ function Status({ progress, paused }) {
 		} = useContext(PlayingContext),
 		[elapsed, setElapsed] = useState()
 
-	const step = 500,
+	const step = 1e3,
 		tread = step / duration
 
 	useEffect(() => {
@@ -56,7 +57,11 @@ function Status({ progress, paused }) {
 			<img className="status-image" alt="album cover" src={album.art ?? def} />
 			<span className="status-track">{title}</span>
 			<span className="status-artist">{artists.join(', ')}</span>
-			<i className="icon-info"></i>
+			<i
+				className={`icon-${
+					socket.readyState === socket.OPEN ? 'info' : 'unlink'
+				}`}
+			></i>
 			<div
 				className="status-progress"
 				style={{ width: `calc(var(--max) * ${elapsed})` }}

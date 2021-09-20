@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 
-import Track from '../Track/Track'
+import Track, { Tracklist } from '../Track/Track'
 
 import PlayingContext from '../../contexts/Playing'
 
@@ -11,28 +11,31 @@ function History({ next, tracks }) {
 
 	return (
 		<div className="wrapper history">
-			{next && (
-				<div className="history-section next">
-					<span>Następny:</span>
-					<Track track={next} timestamp=">" />
+			<Tracklist>
+				{next && (
+					<div className="history-section next">
+						<span>Następny:</span>
+						<Track track={next} timestamp=">" />
+					</div>
+				)}
+
+				<div className="history-section now">
+					<span>Gra teraz:</span>
+					<Track track={playing} timestamp="~" />
 				</div>
-			)}
 
-			<div className="history-section now">
-				<span>Gra teraz:</span>
-				<Track track={playing} timestamp="~" />
-			</div>
+				<div className="history-section previous">
+					<span>Poprzednie:</span>
 
-			<div className="history-section previous">
-				<span>Poprzednie:</span>
-				{tracks.map((track) => {
-					let time = track.timestamp
-						? new Date(track.timestamp).toISOString().slice(11, 16)
-						: '-:-'
+					{tracks.map((track) => {
+						let time = track.timestamp
+							? new Date(track.timestamp).toISOString().slice(11, 16)
+							: '-:-'
 
-					return <Track key={track.id} track={track} timestamp={time} />
-				})}
-			</div>
+						return <Track key={track.id} track={track} timestamp={time} />
+					})}
+				</div>
+			</Tracklist>
 		</div>
 	)
 }

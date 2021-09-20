@@ -6,7 +6,6 @@ nav {
 	padding: 0.5em;
 	box-sizing: border-box;
 	user-select: none;
-	box-shadow: 0 0 12px 1px #0000002b, 0 -10px 20px 20px var(--light);
 	z-index: 5;
 	position: fixed;
 	bottom: 0;

@@ -41,7 +41,6 @@
 	white-space: nowrap;
 	display: flex;
 	flex-direction: row;
-	align-items: center;
 	margin-right: 1em;
 }
 
@@ -89,16 +88,28 @@
 	left: 100%;
 	top: 0;
 	border-radius: inherit;
-	background: hsl(12deg, 4%, 20%);
 	transition: 0.3s cubic-bezier(0.7, 0, 0.3, 1);
-
 	display: flex;
 	flex-direction: row;
 	color: #fff;
 	padding: 0.5em;
 	box-sizing: border-box;
 	justify-content: space-around;
+	backdrop-filter: blur(1px);
+	background-color: hsla(var(--deg), 35%, 22%, 71%);
 }
+
+/* .track-more:before {
+	content: '';
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	background-color: var(--dark);
+	filter: blur(2px);
+	z-index: -1;
+	left: 0;
+	top: 0;
+} */
 
 .track.open > .track-more {
 	left: 0;
@@ -116,15 +127,17 @@
 
 .track-more-button > i {
 	width: 100%;
+	border-radius: 1em;
+	margin: 0 0.5em;
 }
 
-.track-more-button > i[data-set='true'] {
+.track-more-button[data-set='true'] > i {
 	background-color: var(--dark);
 	color: var(--main);
 	cursor: default;
 }
 
-.track-more-button:hover {
+.track-more-button:not([data-set='true']):hover > i {
 	background-color: #fff2;
 }
 

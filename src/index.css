@@ -5,6 +5,17 @@ body {
 		sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+
+	background-image: url('https://i1.wp.com/www.estidia.eu/wp-content/uploads/2018/04/Savin-NY-Website-Background-Web.jpg?fit=848%2C477');
+	background-size: cover;
+	background-color: var(--light);
+	background-blend-mode: multiply;
+	transition: background-color 0.5s;
+}
+
+#root {
+	backdrop-filter: blur(6px);
+	height: 100vh;
 }
 
 :root {
@@ -13,4 +24,23 @@ body {
 	--light: hsl(var(--deg) 50% 88%);
 	--main: hsl(var(--deg), 57%, 52%);
 	--dark: hsl(var(--deg) 55% 22%);
+}
+
+@media (pointer: fine) {
+	::-webkit-scrollbar-track {
+		border-radius: 10px;
+	}
+
+	::-webkit-scrollbar {
+		width: 0.5em;
+	}
+
+	::-webkit-scrollbar-thumb {
+		border-radius: 3px;
+		background-color: var(--main);
+	}
+}
+
+strong {
+	font-weight: bold;
 }

@@ -34,13 +34,8 @@ function Info() {
 				track
 					.getStats()
 					.then((stats) => {
-						track
-							.getVote()
-							.then(() => {
-								setTrack(track)
-								setMeta(false)
-							})
-							.catch((err) => console.error(err))
+						setTrack(track)
+						setMeta(false).catch((err) => console.error(err))
 					})
 					.catch((err) => console.error(err))
 			})
@@ -89,10 +84,12 @@ function Info() {
 			/>
 			<div className="info-wrapper">
 				<span className="title">{track.title}</span>
+
 				<span className="artist">{track.artists[0]}</span>
-				<div className="info-balance">
+
+				<div className="info-balance" disabled={total < 1}>
 					<div className="up" style={{ width: `${percent}%` }}>
-						{track.stats.up}&nbsp;
+						{track.stats.up}
 					</div>
 					<div className="down" style={{ width: `${100 - percent}%` }}>
 						{track.stats.down}
@@ -106,12 +103,12 @@ function Info() {
 						<div className="buttons">
 							<i
 								className="icon-thumbs-up"
-								data-set={track.cast === 'up'}
+								data-set={track.stats.cast === 'up'}
 								onClick={(e) => vote('up')}
 							></i>
 							<i
 								className="icon-thumbs-down"
-								data-set={track.cast === 'down'}
+								data-set={track.stats.cast === 'down'}
 								onClick={(e) => vote('down')}
 							></i>
 						</div>
@@ -151,14 +148,32 @@ function Info() {
 							</span>
 						</div>
 
-						<div>Liczba głosów: {total}</div>
+						{total > 0 && (
+							<div>
+								<i className="icon-thumbs-up"></i> Liczba głosów:&nbsp;
+								<strong>{total}</strong>
+							</div>
+						)}
 
-						<div>Miejsce: #{track.stats.rank}</div>
+						{track.stats.rank > 0 && (
+							<div>
+								<i className="icon-list-numbered"></i> Miejsce:&nbsp;
+								<strong>#{track.stats.rank}</strong>
+							</div>
+						)}
 
 						{track.banned && (
 							<div>
 								<span>
-									Utwór zablokowany <i className="icon-cancel-circled"></i>
+									<i className="icon-cancel-circled"></i> Utwór zablokowany
+								</span>
+							</div>
+						)}
+
+						{track.explicit && (
+							<div>
+								<span>
+									<i className="icon-cancel-circled"></i> Przekleństwa
 								</span>
 							</div>
 						)}

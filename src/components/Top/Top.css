@@ -1,0 +1,8 @@
+.top-header {
+	border-bottom: 1px solid #eeec;
+	display: block;
+	margin: 1em 0.5em 0;
+	color: var(--dark);
+	text-align: center;
+	font-weight: bold;
+}
