@@ -4,8 +4,10 @@ import { useParams, Redirect } from 'react-router-dom'
 import Modal from '../Modal/Modal'
 
 import { get } from '../../Cache'
+import { credentials } from '../../Auth'
 
 import PlayingContext from '../../contexts/Playing'
+import ModalLoginContext from '../../contexts/ModalLogin'
 
 import './Info.css'
 import def from '../../media/default.png'
@@ -21,7 +23,8 @@ function Info() {
 			artists: ['-'],
 		}),
 		[meta, setMeta] = useState('...'),
-		[showModal, setShowModal] = useState(true),
+		[modalReport, setModalReport] = useState(false),
+		{ setModalLogin } = useContext(ModalLoginContext),
 		playing = useContext(PlayingContext)
 
 	if (!id) last = playing.id ?? ''
@@ -35,18 +38,23 @@ function Info() {
 					.getStats()
 					.then((stats) => {
 						setTrack(track)
-						setMeta(false).catch((err) => console.error(err))
+						setMeta(false)
 					})
-					.catch((err) => console.error(err))
+					.catch((err) =>
+						setMeta(`Wystąpił błąd przy pobieraniu statystyk utworu`)
+					)
 			})
-			.catch((err) => {
+			.catch((err) =>
 				setMeta(`Wystąpił błąd przy pobieraniu informacji o utworze`)
-			})
+			)
 	}, [last]) // eslint-disable-line
 
 	if (!id && last) return <Redirect to={`/utwor/${last}`} />
 
 	function vote(value) {
+		if (!credentials.token) return setModalLogin(true)
+
+		setMeta('Zmienianie głosu...')
 		track
 			.setVote(value)
 			.then((ok) => {
@@ -55,11 +63,18 @@ function Info() {
 					.then(() => {
 						ok
 							? setMeta(`Zmieniono głos na ${{ up: '👍', down: '👎' }[value]}`)
-							: setMeta('Wystąpił bład przy zmienianiu głosu')
+							: setMeta('Głos nie został zmieniony')
 					})
-					.catch((err) => console.error(err))
+					.catch((err) =>
+						setMeta('Wystąpił błąd przy aktualizacji statystyk utworu')
+					)
 			})
-			.catch((err) => console.error(err))
+			.catch((err) => setMeta('Wystąpił błąd podczas wysyłania głosu'))
+	}
+
+	function report() {
+		track.setVote('report')
+		setModalReport(false)
 	}
 
 	const total = track.stats.up + track.stats.down,
@@ -69,11 +84,6 @@ function Info() {
 				: 50
 
 	document.setTitle(track.title)
-
-	const toggleModal = () => setShowModal(!showModal)
-	const report = () => {
-		track.setVote('report')
-	}
 
 	return (
 		<div className="wrapper info">
@@ -96,7 +106,7 @@ function Info() {
 					</div>
 				</div>
 
-				{meta && <span className="info-meta">{meta}</span>}
+				<span className="info-meta">&nbsp;{meta}</span>
 
 				{track.id && (
 					<div className="info-list">
@@ -133,15 +143,14 @@ function Info() {
 							></i>
 							<i
 								className="icon-flag"
-								onClick={(e) => {
-									toggleModal()
-								}}
+								onClick={(e) => setModalReport(true)}
 							></i>
 						</div>
 
 						<div>
 							<span>{track.artists.join(', ')}</span>
 						</div>
+
 						<div>
 							<span>
 								{track.album.name ?? '-'} ({track.album.year ?? '-'})
@@ -151,14 +160,14 @@ function Info() {
 						{total > 0 && (
 							<div>
 								<i className="icon-thumbs-up"></i> Liczba głosów:&nbsp;
-								<strong>{total}</strong>
+								<b>{total}</b>
 							</div>
 						)}
 
 						{track.stats.rank > 0 && (
 							<div>
 								<i className="icon-list-numbered"></i> Miejsce:&nbsp;
-								<strong>#{track.stats.rank}</strong>
+								<b>#{track.stats.rank}</b>
 							</div>
 						)}
 
@@ -181,27 +190,28 @@ function Info() {
 				)}
 			</div>
 			<span className="info-data">{id}</span>
-			{showModal ? (
+			{modalReport && (
 				<Modal>
-					<div className="modal-text">
-						<div>
-							Czy na pewno chcesz zgłosić utwór{' '}
-							<i>
-								<b>{track.title}</b>
-							</i>
-							?
-						</div>
+					<div class="modal-title">Czy na pewno chcesz zgłosić utwór?</div>
+					<div class="modal-body">
+						Zgłoszone utwory trafiają do sprawdzenia przez administrację. Jeżeli
+						<b> {track.title}</b> zawiera treści nieodpowiednie lub
+						<i> bardzo</i> nie chciałbyś go usłyszeć na korytarzu, zalecamy
+						zgłoszanie tego utworu.
 					</div>
-					<div className="modal-buttons-2">
-						<button onClick={toggleModal} className="modal-button">
-							Nie
+					<div className="modal-buttons">
+						<button
+							onClick={() => setModalReport(false)}
+							className="modal-button"
+						>
+							Anuluj
 						</button>
 						<button onClick={report} className="modal-button">
-							Tak
+							Zgłoś
 						</button>
 					</div>
 				</Modal>
-			) : null}
+			)}
 		</div>
 	)
 }

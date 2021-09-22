@@ -1,6 +1,10 @@
 import { useState, createContext, useContext } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 
+import { credentials } from '../../Auth'
+
+import ModalLoginContext from '../../contexts/ModalLogin'
+
 import './Track.css'
 import def from '../../media/default.png'
 
@@ -26,13 +30,16 @@ function Track({ track, timestamp, displayRank = false }) {
 			stats = {},
 		} = track ?? {},
 		history = useHistory(),
-		tracklist = useContext(TracklistContext)
+		tracklist = useContext(TracklistContext),
+		{ setModalLogin } = useContext(ModalLoginContext)
 
 	function vote(value) {
+		if (!credentials.token) return setModalLogin(true)
+
 		track
 			.setVote(value)
 			.then((ok) => ok && tracklist.setActive(false))
-			.catch((err) => console.error(err))
+			.catch((err) => console.error(err)) // TODO: alert on error
 	}
 
 	function info() {

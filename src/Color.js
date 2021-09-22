@@ -1,7 +1,7 @@
 import FastAverageColor from 'fast-average-color'
 
 var fac = new FastAverageColor(),
-	def = document.documentElement.style.getPropertyValue('--deg')
+	def = 0
 
 function setColor(target, lvl) {
 	fac
@@ -20,4 +20,8 @@ function setColor(target, lvl) {
 		})
 }
 
-export { setColor }
+function setDefault() {
+	document.documentElement.style.setProperty('--deg', def + 'deg')
+}
+
+export { setColor, setDefault }

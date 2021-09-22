@@ -71,6 +71,7 @@
 
 .info-list > .buttons {
 	padding: 0;
+	padding-bottom: 0.25em;
 }
 
 .info-list > .buttons > i {
@@ -84,6 +85,7 @@
 	background-color: var(--light);
 	color: var(--main);
 	cursor: default;
+	border-radius: 1em;
 }
 
 .info-list > .buttons > i:hover {

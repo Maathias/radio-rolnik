@@ -88,9 +88,7 @@ class Track {
 					this.stats.cast = cast
 					resolve(cast)
 				})
-				.catch((err) => {
-					console.error(err)
-				})
+				.catch((err) => reject(err))
 		})
 	}
 
@@ -105,9 +103,7 @@ class Track {
 					this.stats = stats
 					resolve(stats)
 				})
-				.catch((err) => {
-					console.error(err)
-				})
+				.catch((err) => reject(err))
 		})
 	}
 }
@@ -158,10 +154,12 @@ function getMultiple(ids = []) {
 		if (missing.length < 1) return resolve(ids.map((id) => Tracks[id]))
 		else {
 			// fetch missing tracks
-			downloadMultiple(ids).then((tracks) => {
-				tracks.map((track) => (Tracks[track.id] = track)) // add to cache
-				return resolve(ids.map((id) => Tracks[id])) // resolve from cache
-			})
+			downloadMultiple(ids)
+				.then((tracks) => {
+					tracks.map((track) => (Tracks[track.id] = track)) // add to cache
+					return resolve(ids.map((id) => Tracks[id])) // resolve from cache
+				})
+				.catch((err) => reject(err))
 		}
 	})
 }
@@ -176,6 +174,7 @@ function getMultipleStats(tids) {
 			.then((stats) => {
 				resolve(stats)
 			})
+			.catch((err) => reject(err))
 	})
 }
 
@@ -205,7 +204,7 @@ function downloadMultiple(tids) {
 			.then((tracks) => {
 				resolve(tracks.map((tdata) => new Track(tdata)))
 			})
-			.catch((err) => {})
+			.catch((err) => reject(err))
 	})
 }
 

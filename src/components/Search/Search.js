@@ -24,11 +24,16 @@ function Search() {
 		history.replace(`/wyszukaj/${query}`)
 
 		search(query)
-			.then(({ tracks, total }) => {
-				getMultiple(tracks)
-					.then((tracks) => {
-						setResults(tracks)
-						setMeta(`Znaleziono ${total} utworów`)
+			.then(({ tids, total, elapsed }) => {
+				getMultiple(tids)
+					.then((tids) => {
+						setResults(tids)
+						setMeta(
+							`Znaleziono ${total} utworów (${(
+								elapsed[0] +
+								elapsed[1] / 1e9
+							).toPrecision(2)}s)`
+						)
 					})
 					.catch((err) => {
 						setMeta(`Wystąpił błąd podczas pobierania utworów`)

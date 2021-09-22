@@ -1,7 +1,14 @@
-import { useState } from 'react/cjs/react.development'
+import { useContext, useState } from 'react/cjs/react.development'
+
 import { promptLogin, credentials, clearCredentials } from '../../Auth'
 
+import SettingsContext from '../../contexts/Settings'
+
 import './Settings.css'
+
+const defaults = {
+	hueFromArt: true,
+}
 
 function Toggle({ value }) {
 	return (
@@ -11,13 +18,34 @@ function Toggle({ value }) {
 	)
 }
 
-function SettingToggle({ children, defaultValue }) {
-	const [value, setValue] = useState(defaultValue ?? false)
+function External({ href, content, target = '_blank' }) {
+	return (
+		<a href={href} target={target} className="settings-sub external">
+			{content} <i className="icon-export"></i>
+		</a>
+	)
+}
+
+function Plain({ content }) {
+	return (
+		<div className="settings-sub plain">
+			{content} <i className="icon-info"></i>
+		</div>
+	)
+}
+
+function SettingToggle({ children, id }) {
+	const { settings, setSettings } = useContext(SettingsContext),
+		[value, setValue] = useState(settings[id] ?? defaults[id] ?? false)
+
 	return (
 		<div
-			className="settings-toggle"
+			className="settings-sub toggle"
 			data-value={value}
-			onClick={() => setValue((value) => !value)}
+			onClick={() => {
+				setValue((value) => !value)
+				setSettings(id, value)
+			}}
 		>
 			{children}
 			<Toggle value={value} />
@@ -54,29 +82,33 @@ function Settings() {
 
 			{creds.token ? null : (
 				<div className="settings-part body">
-					<strong>Zaloguj się</strong> aby móc głosować więcej niż na jeden
-					utwór
+					<b>Zaloguj się</b> aby móc głosować więcej niż na jeden utwór
 				</div>
 			)}
 
 			<div className="settings-part">
-				<SettingToggle defaultValue={false}>
+				<SettingToggle id="hueFromArt">
 					Ustawiaj kolorystyke strony na podstawie okładki albumu
 				</SettingToggle>
-				<SettingToggle>Lorem ipsum dolor sit amet</SettingToggle>
 			</div>
 
 			{/* Terms of Service and other usefull links */}
 			<div className="settings-part">
-				<a href="/tos.html" target="_blank" className="settings-toggle">
-					Regulamin korzystania ze strony <i className="icon-export"></i>
-				</a>
-				<a href="/privacy.html" target="_blank" className="settings-toggle">
-					Zasady prywatności (RODO) <i className="icon-export"></i>
-				</a>
+				<External href="/tos.html" content="Regulamin korzystania ze strony" />
+				<External href="/privacy.html" content="Zasady prywatności (RODO)" />
+			</div>
+
+			<div className="settings-part">
+				<Plain
+					content={`Autorzy aplikacji: ${[
+						'Mateusz Pstrucha',
+						'Sebastian Fudalej',
+					].join(', ')}`}
+				/>
 			</div>
 		</div>
 	)
 }
 
 export default Settings
+export { defaults }

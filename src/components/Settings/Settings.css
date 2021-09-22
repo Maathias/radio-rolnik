@@ -41,7 +41,7 @@
 	cursor: pointer;
 }
 
-.settings-toggle {
+.settings-sub {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -50,22 +50,22 @@
 	margin-bottom: 0.2em;
 	text-decoration: none;
 	color: inherit;
-	cursor: pointer;
 }
 
-.settings-toggle i {
+.settings-sub i {
 	color: var(--dark);
 }
 
-.settings-toggle[data-value='true'] i {
+.settings-sub.toggle[data-value='true'] .toggle i {
 	color: var(--main);
 }
 
-.settings-toggle:hover {
+.settings-sub.external:hover,
+.settings-sub.toggle:hover {
 	color: var(--main);
-}
-
-.toggle {
-	font-size: 1.2em;
 	cursor: pointer;
+}
+
+.toggle i {
+	font-size: 1.2em;
 }
