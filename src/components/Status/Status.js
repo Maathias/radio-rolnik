@@ -10,13 +10,12 @@ import SettingsContext from '../../contexts/Settings'
 import './Status.css'
 import def from '../../media/default.png'
 
-function Status({ progress, paused }) {
+function Status({ progress: [progress, duration], paused }) {
 	const {
 			id,
 			title = '-',
 			artists = ['-'],
 			album = {},
-			duration,
 		} = useContext(PlayingContext),
 		[elapsed, setElapsed] = useState(),
 		{ settings } = useContext(SettingsContext)
@@ -26,7 +25,7 @@ function Status({ progress, paused }) {
 
 	useEffect(() => {
 		if (!settings.hueFromArt) setDefault()
-		else if (album.art) setColor(album.art, 1)
+		else if (album.art) setColor(album.art[1].url, 1)
 	}, [album.art, settings.hueFromArt])
 
 	useEffect(() => {
@@ -57,7 +56,11 @@ function Status({ progress, paused }) {
 			className={['status', paused ? 'paused' : ''].join(' ')}
 			to={`/utwor/${id}`}
 		>
-			<img className="status-image" alt="album cover" src={album.art ?? def} />
+			<img
+				className="status-image"
+				alt="album cover"
+				src={album.art ? album.art[1].url : def}
+			/>
 			<span className="status-track">{title}</span>
 			<span className="status-artist">{artists.join(', ')}</span>
 			<i

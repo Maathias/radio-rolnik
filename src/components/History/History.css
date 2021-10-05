@@ -6,10 +6,15 @@
 }
 
 .history-section > span {
-	border-bottom: 1px solid #eeec;
 	display: block;
 	margin: 1em 0.5em 0;
 	color: #3a3a3a;
+	text-align: center;
+}
+
+.history-section > .header {
+	border-bottom: 1px solid #eeec;
+	text-align: left;
 }
 
 .history-section.now > .track {

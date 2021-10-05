@@ -87,8 +87,14 @@ function Info() {
 
 	return (
 		<div className="wrapper info">
+			{/* <Image
+				images={track.album.art}
+				fallback={def}
+				className="info-image"
+				alt="album cover"
+			/> */}
 			<img
-				src={track.album.art ?? def}
+				src={track.album.art ? track.album.art[0].url : def}
 				className="info-image"
 				alt="album cover"
 			/>

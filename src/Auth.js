@@ -2,7 +2,7 @@ import Jwt from 'jsonwebtoken'
 import localStorage from 'local-storage'
 
 const appId = '299948451430584',
-	redirectUri = `https://radio.rolniknysa.pl/api/login/token`,
+	redirectUri = process.env.REACT_APP_SPOTIFY_REDIRECTURI,
 	state = 'stejt'
 
 var credentials = {
