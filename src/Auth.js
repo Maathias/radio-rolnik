@@ -2,7 +2,7 @@ import Jwt from 'jsonwebtoken'
 import localStorage from 'local-storage'
 
 const appId = '299948451430584',
-	redirectUri = process.env.REACT_APP_SPOTIFY_REDIRECTURI,
+	redirectUri = process.env.REACT_APP_FB_REDIRECTURI,
 	state = 'stejt'
 
 var credentials = {
@@ -17,19 +17,16 @@ function promptLogin() {
 			`Zaloguj się przez Facebook`,
 			`scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=400,height=550`
 		)
-		window.exit = ({ jwt }) => {
-			popup.close()
 
-			credentials = {
-				token: jwt,
-				udata: Jwt.decode(jwt),
+		let interval = setInterval(() => {
+			if (popup.closed) {
+				resolve({
+					token: localStorage('token'),
+					udata: localStorage('udata'),
+				})
+				clearInterval(interval)
 			}
-
-			localStorage('token', credentials.token)
-			localStorage('udata', credentials.udata)
-
-			resolve(credentials)
-		}
+		}, 500)
 	})
 }
 
