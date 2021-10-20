@@ -34,7 +34,13 @@ function History({ next, tracks, paused }) {
 							? new Date(track.timestamp).toISOString().slice(11, 16)
 							: '-:-'
 
-						return <Track key={track.id} track={track} timestamp={time} />
+						return (
+							<Track
+								key={track.id + '_' + track.timestamp}
+								track={track}
+								timestamp={time}
+							/>
+						)
 					})}
 
 					{tracks.length < 1 && (

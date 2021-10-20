@@ -1,4 +1,3 @@
-import Jwt from 'jsonwebtoken'
 import localStorage from 'local-storage'
 
 const appId = '299948451430584',
@@ -20,10 +19,12 @@ function promptLogin() {
 
 		let interval = setInterval(() => {
 			if (popup.closed) {
-				resolve({
+				credentials = {
 					token: localStorage('token'),
 					udata: localStorage('udata'),
-				})
+				}
+
+				resolve(credentials)
 				clearInterval(interval)
 			}
 		}, 500)

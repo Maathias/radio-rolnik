@@ -4,7 +4,7 @@ import {
 	Route,
 	Redirect,
 } from 'react-router-dom'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import ga from 'react-ga'
 import localStorage from 'local-storage'
 
@@ -41,14 +41,6 @@ document.setTitle = (prefix, suffix) => {
 	ga.pageview(document.location.pathname)
 }
 
-function usePrevious(value) {
-	const ref = useRef()
-	useEffect(() => {
-		ref.current = value
-	})
-	return ref.current
-}
-
 function Main() {
 	const [playing, setPlaying] = useState({}),
 		[elapsed, setElapsed] = useState([0, 0]),
@@ -58,31 +50,16 @@ function Main() {
 		[top, setTop] = useState([]),
 		[topDate, setTopDate] = useState(),
 		[modalLogin, setModalLogin] = useState(false),
-		[settings, setSettings] = useState(localStorage('settings') ?? defaults),
-		prevPlaying = usePrevious(playing)
+		[settings, setSettings] = useState(localStorage('settings') ?? defaults)
 
-	useEffect(() => {
-		console.log('effect', prevPlaying?.id, playing?.id)
-		if (prevPlaying?.id !== playing?.id) {
-			if (prevPlaying?.id) {
-				setPrevious((prev) => [prevPlaying, ...prev])
-			}
-		}
-		// setPlaying((playing) => {
-		// 	console.log(playing, track, playing.id != track.id)
-		// 	if (playing.id != track.id) {
-		// 		if (playing.id)
-		// 	}
-		// 	return track
-		// })
-	}, [prevPlaying, playing])
-
+	// set up socket events
 	useEffect(() => {
 		addEvent('status', ({ tid, progress, duration, paused, timestamp }) => {
+			if (tid === null) return
 			get(tid)
 				.then((track) => {
 					track.timestamp = timestamp // insert timestamp
-					console.log('new status')
+					console.info('status: update', tid)
 					setPlaying(track)
 					setElapsed([progress, duration])
 					setPaused(paused)
@@ -132,9 +109,9 @@ function Main() {
 		})
 	}, []) // eslint-disable-line
 
+	// save settings on change
 	useEffect(() => {
-		console.log('settings changed')
-		console.log(settings)
+		console.info('settings changed', settings)
 		localStorage('settings', settings)
 	}, [settings])
 
