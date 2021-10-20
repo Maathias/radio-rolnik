@@ -43,7 +43,7 @@ document.setTitle = (prefix, suffix) => {
 
 function Main() {
 	const [playing, setPlaying] = useState({}),
-		[elapsed, setElapsed] = useState(0),
+		[elapsed, setElapsed] = useState([0, 0]),
 		[paused, setPaused] = useState(true),
 		[next, setNext] = useState(),
 		[previous, setPrevious] = useState([]),
@@ -52,12 +52,16 @@ function Main() {
 		[modalLogin, setModalLogin] = useState(false),
 		[settings, setSettings] = useState(localStorage('settings') ?? defaults)
 
+	// set up socket events
 	useEffect(() => {
-		addEvent('status', ({ trackid, progress, paused }) => {
-			get(trackid)
+		addEvent('status', ({ tid, progress, duration, paused, timestamp }) => {
+			if (tid === null) return
+			get(tid)
 				.then((track) => {
+					track.timestamp = timestamp // insert timestamp
+					console.info('status: update', tid)
 					setPlaying(track)
-					setElapsed(progress)
+					setElapsed([progress, duration])
 					setPaused(paused)
 				})
 				.catch((err) => {
@@ -66,16 +70,26 @@ function Main() {
 				})
 		})
 
-		addEvent('next', ({ trackid }) => {
-			get(trackid)
+		addEvent('next', ({ tid }) => {
+			if (tid == null) return setNext(null)
+			get(tid)
 				.then((track) => {
 					setNext(track)
 				})
 				.catch((err) => console.error(err))
 		})
 
-		addEvent('previous', ({ trackids, timestamps }) => {
-			getMultiple(trackids)
+		addEvent('previous', ({ combo, push }) => {
+			if (push) {
+				return get(push).then((track) =>
+					setPrevious((prev) => [track, ...prev])
+				)
+			}
+
+			let tids = combo.map((pair) => pair[0]),
+				timestamps = combo.map((pair) => pair[1])
+
+			getMultiple(tids)
 				.then((tracks) => {
 					// insert timestamps to tracks
 					tracks.map((track, i) => (track.timestamp = timestamps[i]))
@@ -84,8 +98,8 @@ function Main() {
 				.catch((err) => console.error(err))
 		})
 
-		addEvent('top', ({ trackids, timestamp }) => {
-			Promise.all([getMultiple(trackids), getMultipleStats(trackids)])
+		addEvent('top', ({ tids, timestamp }) => {
+			Promise.all([getMultiple(tids), getMultipleStats(tids)])
 				.then(([tracks, stats]) => {
 					tracks.map((track, i) => (track.stats = stats[i]))
 					setTop(tracks)
@@ -93,11 +107,11 @@ function Main() {
 				})
 				.catch((err) => console.error(err))
 		})
-	}, [])
+	}, []) // eslint-disable-line
 
+	// save settings on change
 	useEffect(() => {
-		console.log('settings changed')
-		console.log(settings)
+		console.info('settings changed', settings)
 		localStorage('settings', settings)
 	}, [settings])
 
@@ -117,7 +131,7 @@ function Main() {
 							<Router>
 								<Switch>
 									<Route exact path="/">
-										<History next={next} tracks={previous} />
+										<History next={next} tracks={previous} paused={paused} />
 									</Route>
 
 									<Route path="/utwor/:id?">

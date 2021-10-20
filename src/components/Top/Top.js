@@ -13,7 +13,7 @@ function Top({ tracks, timestamp }) {
 			'Piątek',
 			'Sobota',
 		][date.getDay()],
-		day = date.toLocaleString('pl-PL')
+		day = date.toLocaleTimeString('pl-PL')
 
 	return (
 		<div className="wrapper top">

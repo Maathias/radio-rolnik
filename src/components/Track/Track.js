@@ -59,7 +59,11 @@ function Track({ track, timestamp, displayRank = false }) {
 			>
 				{timestamp && <span className="track-timestamp">{timestamp}</span>}
 				{displayRank && <span className="track-rank">{stats.rank}</span>}
-				<img className="track-image" src={album.art ?? def} alt="album cover" />
+				<img
+					className="track-image"
+					src={album.art ? album.art[2].url : def}
+					alt="album cover"
+				/>
 			</div>
 
 			<div className="track-section-b" onClick={() => info()}>
@@ -76,25 +80,33 @@ function Track({ track, timestamp, displayRank = false }) {
 				></i>
 			</div>
 			<div className="track-more">
-				<div className="track-more-button" data-set={stats.cast === 'up'}>
-					<i className="icon-thumbs-up" onClick={(e) => vote('up')}></i>
+				<div
+					className="track-more-button"
+					data-set={stats.cast === 'up'}
+					onClick={(e) => vote('up')}
+				>
+					<i className="icon-thumbs-up"></i>
 				</div>
 
-				<div className="track-more-button" data-set={stats.cast === 'down'}>
-					<i className="icon-thumbs-down" onClick={(e) => vote('down')}></i>
+				<div
+					className="track-more-button"
+					data-set={stats.cast === 'down'}
+					onClick={(e) => vote('down')}
+				>
+					<i className="icon-thumbs-down"></i>
 				</div>
 
 				<Link to={`/utwor/${id}`} className="track-more-button">
 					<i className="icon-info"></i>
 				</Link>
 
-				<div className="track-more-button">
-					<i
-						className="icon-cancel-circled"
-						onClick={() => {
-							tracklist.setActive(false)
-						}}
-					></i>
+				<div
+					className="track-more-button"
+					onClick={() => {
+						tracklist.setActive(false)
+					}}
+				>
+					<i className="icon-cancel-circled"></i>
 				</div>
 			</div>
 		</div>

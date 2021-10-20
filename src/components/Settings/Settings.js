@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react/cjs/react.development'
+import { useContext, useState } from 'react'
 
 import { promptLogin, credentials, clearCredentials } from '../../Auth'
 

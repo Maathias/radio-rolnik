@@ -1,10 +1,14 @@
+// import dotenv from 'dotenv'
+
+// dotenv.config()
+
 const events = {}
 
 let socket,
 	retries = 0
 
 function open() {
-	socket = new WebSocket(`wss://${window.location.host}/ws/`)
+	socket = new WebSocket(process.env.REACT_APP_WS_SERVER)
 
 	socket.onopen = () => {
 		console.info(`Socket: connected`)

@@ -12,7 +12,7 @@ class Track {
 	 * @param {String} tdata.title
 	 * @param {Object} tdata.album
 	 * @param {String} tdata.album.title
-	 * @param {String} tdata.album.art album art url
+	 * @param {Array} tdata.album.art array of available album arts (3)
 	 * @param {Number} tdata.album.year
 	 * @param {Number} tdata.duration duration in milliseconds
 	 * @param {Boolean} tdata.explicit does the track contain explicit language

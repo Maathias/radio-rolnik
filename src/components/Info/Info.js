@@ -11,6 +11,7 @@ import ModalLoginContext from '../../contexts/ModalLogin'
 
 import './Info.css'
 import def from '../../media/default.png'
+import admin from '../../Admin'
 
 var last
 
@@ -87,8 +88,14 @@ function Info() {
 
 	return (
 		<div className="wrapper info">
+			{/* <Image
+				images={track.album.art}
+				fallback={def}
+				className="info-image"
+				alt="album cover"
+			/> */}
 			<img
-				src={track.album.art ?? def}
+				src={track.album.art ? track.album.art[0].url : def}
 				className="info-image"
 				alt="album cover"
 			/>
@@ -146,6 +153,17 @@ function Info() {
 								onClick={(e) => setModalReport(true)}
 							></i>
 						</div>
+
+						{credentials.udata.perms > 0 && (
+							<div className="buttons">
+								<i
+									className="icon-cancel-circled"
+									onClick={(e) => {
+										admin.ban(track.id).then((ok) => console.log(ok))
+									}}
+								></i>
+							</div>
+						)}
 
 						<div>
 							<span>{track.artists.join(', ')}</span>
