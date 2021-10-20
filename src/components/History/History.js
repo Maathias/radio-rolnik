@@ -30,9 +30,17 @@ function History({ next, tracks, paused }) {
 					<span className="header">Poprzednie:</span>
 
 					{tracks.map((track) => {
-						let time = track.timestamp
-							? new Date(track.timestamp).toISOString().slice(11, 16)
-							: '-:-'
+						let time = track.timestamp ? new Date(track.timestamp) : '-:-'
+
+						if (track.timestamp) {
+							let h = time.getHours(),
+								m = time.getMinutes()
+
+							h = h < 10 ? '0' + h : h
+							m = m < 10 ? '0' + m : m
+
+							time = h + ':' + m
+						}
 
 						return (
 							<Track
