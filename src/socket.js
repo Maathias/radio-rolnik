@@ -23,9 +23,9 @@ function open() {
 	socket.onmessage = (e) => {
 		let data = JSON.parse(e.data)
 
-		console.debug(data)
-
 		if (!Array.isArray(data)) data = [data]
+
+		console.debug(data.map(({ cat }) => cat).join(' '), data)
 
 		for (let chunk of data) {
 			let category = events[chunk.cat]
