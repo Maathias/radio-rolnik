@@ -87,8 +87,6 @@ function Info({ top }) {
 		setModalReport(false)
 	}
 
-	console.log(track.stats)
-
 	const total = track.stats.total,
 		percent = total > 0 ? (track.stats.up / total) * 100 : 50
 
