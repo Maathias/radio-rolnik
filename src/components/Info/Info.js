@@ -15,7 +15,7 @@ import admin from '../../Admin'
 
 var last
 
-function Info() {
+function Info({ top }) {
 	const { id } = useParams(),
 		[track, setTrack] = useState({
 			title: '-',
@@ -28,8 +28,8 @@ function Info() {
 		{ setModalLogin } = useContext(ModalLoginContext),
 		playing = useContext(PlayingContext)
 
-	if (!id) last = playing.id ?? ''
-	else last = id
+	if (id) last = id
+	if (!last) last = id ?? playing.id ?? top ?? ''
 
 	useEffect(() => {
 		setMeta(`Pobieranie... ${last}`)
@@ -53,24 +53,33 @@ function Info() {
 	if (!id && last) return <Redirect to={`/utwor/${last}`} />
 
 	function vote(value) {
-		if (!credentials.token) return setModalLogin(true)
+		if (!credentials.token) return setModalLogin(true) // prompt for login
+		if (track.stats.cast === value) return // ignore vote
 
 		setMeta('Zmienianie głosu...')
+
 		track
 			.setVote(value)
 			.then((ok) => {
 				track
 					.getStats()
 					.then(() => {
+						// http ok, vote accepted?
 						ok
 							? setMeta(`Zmieniono głos na ${{ up: '👍', down: '👎' }[value]}`)
 							: setMeta('Głos nie został zmieniony')
 					})
-					.catch((err) =>
+					.catch((err) => {
+						// http error on update stats
 						setMeta('Wystąpił błąd przy aktualizacji statystyk utworu')
-					)
+						console.error(err)
+					})
 			})
-			.catch((err) => setMeta('Wystąpił błąd podczas wysyłania głosu'))
+			.catch((err) => {
+				// http error on send
+				setMeta('Wystąpił błąd podczas wysyłania głosu')
+				console.error(err)
+			})
 	}
 
 	function report() {
@@ -78,22 +87,15 @@ function Info() {
 		setModalReport(false)
 	}
 
-	const total = track.stats.up + track.stats.down,
-		percent =
-			total > 0
-				? (track.stats.up / (track.stats.up + track.stats.down)) * 100
-				: 50
+	console.log(track.stats)
+
+	const total = track.stats.total,
+		percent = total > 0 ? (track.stats.up / total) * 100 : 50
 
 	document.setTitle(track.title)
 
 	return (
 		<div className="wrapper info">
-			{/* <Image
-				images={track.album.art}
-				fallback={def}
-				className="info-image"
-				alt="album cover"
-			/> */}
 			<img
 				src={track.album.art ? track.album.art[0].url : def}
 				className="info-image"

@@ -9,29 +9,35 @@ import SettingsContext from '../../contexts/Settings'
 
 import './Status.css'
 import def from '../../media/default.png'
+import { get } from '../../Cache'
 
 function Status({ progress: [progress, duration], paused }) {
-	const {
-			id,
-			title = '-',
-			artists = ['-'],
-			album = {},
-		} = useContext(PlayingContext),
-		[elapsed, setElapsed] = useState(),
+	const { tid } = useContext(PlayingContext),
 		{ settings } = useContext(SettingsContext)
 
-	const step = 1e3,
-		tread = step / duration
+	const [elapsed, setElapsed] = useState(),
+		[track, setTrack] = useState({})
 
+	if (tid)
+		get(tid).then((tdata) => {
+			setTrack(tdata)
+		})
+
+	const step = 1e3,
+		tread = step / track?.duration
+
+	// update theme color based on track
 	useEffect(() => {
 		if (!settings.hueFromArt) setDefault()
-		else if (album.art) setColor(album.art[1].url, 1)
-	}, [album.art, settings.hueFromArt])
+		else if (track?.album?.art) setColor(track?.album?.art[1]?.url, 1)
+	}, [track?.album?.art, settings.hueFromArt])
 
+	// update progress on track change
 	useEffect(() => {
 		setElapsed(progress ? progress / duration : 0)
-	}, [progress, duration])
+	}, [progress, duration, tid])
 
+	// animate progress bar
 	useEffect(
 		(anim) => {
 			if (!paused) {
@@ -53,19 +59,23 @@ function Status({ progress: [progress, duration], paused }) {
 
 	return (
 		<Link
-			className={['status', paused ? 'paused' : ''].join(' ')}
-			to={`/utwor/${id}`}
+			className={['status', paused || !tid ? 'paused' : ''].join(' ')}
+			to={`/utwor/${tid}`}
 		>
 			<img
 				className="status-image"
 				alt="album cover"
-				src={album.art ? album.art[1].url : def}
+				src={track?.album?.art ? track?.album?.art[1]?.url : def}
 			/>
-			<span className="status-track">{title}</span>
-			<span className="status-artist">{artists.join(', ')}</span>
+			<span className="status-track">{track?.title}</span>
+			<span className="status-artist">{track?.artists?.join(', ')}</span>
 			<i
 				className={`icon-${
-					socket.readyState === socket.OPEN ? 'info' : 'unlink'
+					track.id
+						? socket.readyState === socket.OPEN
+							? 'info'
+							: 'unlink'
+						: 'spin4 animate-spin'
 				}`}
 			></i>
 			<div

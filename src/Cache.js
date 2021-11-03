@@ -21,13 +21,6 @@ class Track {
 	constructor(tdata) {
 		Object.assign(this, tdata)
 
-		this.stats = {
-			up: -1,
-			down: -1,
-			rank: -1,
-			cast: '',
-		}
-
 		// this.getVote()
 	}
 
@@ -97,14 +90,16 @@ class Track {
 	 * @returns {Promise} stats object
 	 */
 	getStats() {
-		return new Promise((resolve, reject) => {
-			getStats(this.id)
-				.then((stats) => {
-					this.stats = stats
-					resolve(stats)
-				})
-				.catch((err) => reject(err))
-		})
+		if (this._stats) return this._stats
+		else
+			return (this._stats = new Promise((resolve, reject) => {
+				getStats(this.id)
+					.then((stats) => {
+						this.stats = stats
+						resolve(this)
+					})
+					.catch((err) => reject(err))
+			}))
 	}
 }
 
@@ -132,13 +127,11 @@ function getStats(id) {
  * @returns {Track} Track object
  */
 function get(id) {
-	return new Promise((resolve, reject) => {
-		if (typeof Tracks[id] === 'undefined') {
-			download(id)
-				.then((track) => resolve(track))
-				.catch((err) => reject(err))
-		} else resolve(Tracks[id])
-	})
+	if (typeof Tracks[id] === 'undefined') {
+		Tracks[id] = download(id)
+	}
+
+	return Tracks[id]
 }
 
 /**
@@ -147,35 +140,13 @@ function get(id) {
  * @returns {Array} Array of Tracks
  */
 function getMultiple(ids = []) {
-	return new Promise((resolve, reject) => {
-		let missing = ids.filter((id) => !Tracks[id]) // filter tracks missing from cache
+	let missing = ids.filter((id) => !Tracks[id]) // filter tracks missing from cache
 
-		// if none are missing, resolve from cache
-		if (missing.length < 1) return resolve(ids.map((id) => Tracks[id]))
-		else {
-			// fetch missing tracks
-			downloadMultiple(ids)
-				.then((tracks) => {
-					tracks.map((track) => (Tracks[track.id] = track)) // add to cache
-					return resolve(ids.map((id) => Tracks[id])) // resolve from cache
-				})
-				.catch((err) => reject(err))
-		}
-	})
-}
-
-function getMultipleStats(tids) {
-	return new Promise((resolve, reject) => {
-		ky.post('/api/vote/batch', {
-			json: { tids },
-			headers: { authorization: credentials.token },
-		})
-			.json()
-			.then((stats) => {
-				resolve(stats)
-			})
-			.catch((err) => reject(err))
-	})
+	// if none are missing, return from cache
+	if (missing.length < 1) return ids.map((id) => Tracks[id])
+	else {
+		return downloadMultiple(missing)
+	}
 }
 
 /**
@@ -188,24 +159,35 @@ function download(id) {
 		ky.get('/api/track/' + id)
 			.json()
 			.then((track) => {
-				Tracks[track.id] = new Track(track)
-				resolve(Tracks[track.id])
+				resolve(new Track(track))
 			})
 			.catch((err) => reject(err))
 	})
 }
 
 function downloadMultiple(tids) {
-	return new Promise((resolve, reject) => {
-		ky.post('/api/track/batch', {
-			json: { tids },
+	let promises = {}
+
+	// prepare promises
+	// store res, rej
+	tids.forEach((tid) => {
+		Tracks[tid] = new Promise((resolve, reject) => {
+			promises[tid] = { resolve, reject }
 		})
-			.json()
-			.then((tracks) => {
-				resolve(tracks.map((tdata) => new Track(tdata)))
-			})
-			.catch((err) => reject(err))
 	})
+
+	ky.post('/api/track/batch', {
+		json: { tids },
+	})
+		.json()
+		.then((tracks) => {
+			tracks.forEach((tdata) => {
+				promises[tdata.id].resolve(new Track(tdata))
+			})
+		})
+		.catch((err) => console.error(err))
+
+	return tids.map((tid) => Tracks[tid])
 }
 
 /**
@@ -222,11 +204,4 @@ function search(query) {
 	})
 }
 
-export {
-	Tracks as tracks,
-	get,
-	getMultiple,
-	getMultipleStats,
-	search,
-	getStats,
-}
+export { Tracks as tracks, get, getMultiple, search, getStats }

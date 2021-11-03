@@ -1,0 +1,30 @@
+.now > .track {
+	height: 4em;
+	align-items: center;
+}
+
+.now > .track .track-timestamp {
+	display: none;
+}
+
+.now > .track .track-icons {
+	display: none;
+}
+
+.now > .track .track-section-a {
+	width: auto;
+}
+
+.now > .track .track-section-b {
+	flex-wrap: wrap;
+}
+
+.now > .track .track-image {
+	width: 4em;
+	height: 4em;
+}
+
+.now > .track .track-title {
+	width: 100%;
+	font-size: 1.2em;
+}

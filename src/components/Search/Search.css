@@ -19,3 +19,10 @@
 	margin: 1em;
 	color: #000a;
 }
+
+.search[data-results='0'] {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
