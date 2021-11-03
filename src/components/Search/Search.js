@@ -26,18 +26,13 @@ function Search() {
 		search(query)
 			.then(({ tids, total, elapsed }) => {
 				getMultiple(tids)
-					.then((tids) => {
-						setResults(tids)
-						setMeta(
-							`Znaleziono ${total} utworów (${(
-								elapsed[0] +
-								elapsed[1] / 1e9
-							).toPrecision(2)}s)`
-						)
-					})
-					.catch((err) => {
-						setMeta(`Wystąpił błąd podczas pobierania utworów`)
-					})
+				setResults(tids)
+				setMeta(
+					`Znaleziono ${total} utworów (${(
+						elapsed[0] +
+						elapsed[1] / 1e9
+					).toPrecision(2)}s)`
+				)
 			})
 			.catch((err) => {
 				setMeta(`Wystąpił błąd podczas wyszukiwania`)
@@ -57,7 +52,7 @@ function Search() {
 	}, []) // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
-		<div className="wrapper search">
+		<div className="wrapper search" data-results={results.length}>
 			<h2>Wyszukaj utwór</h2>
 			<input
 				className="search-input"
@@ -82,8 +77,8 @@ function Search() {
 					</span>
 				)}
 				<Tracklist>
-					{results.map((track) => {
-						return <Track key={track.id} track={track} />
+					{results.map((tid) => {
+						return <Track key={tid} tid={tid} />
 					})}
 				</Tracklist>
 			</div>

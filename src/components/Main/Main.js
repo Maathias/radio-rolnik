@@ -17,7 +17,6 @@ import Search from '../Search/Search'
 import Settings, { defaults } from '../Settings/Settings'
 import Modal from '../Modal/Modal'
 
-import { get, getMultiple, getMultipleStats } from '../../Cache'
 import { addEvent } from '../../socket'
 import { promptLogin } from '../../Auth'
 
@@ -56,62 +55,23 @@ function Main() {
 	useEffect(() => {
 		addEvent('status', ({ tid, progress, duration, paused, timestamp }) => {
 			if (tid === null) return
-			get(tid)
-				.then((track) => {
-					track.timestamp = timestamp // insert timestamp
-					console.info('status: update', tid)
-					setPlaying(track)
-					setElapsed([progress, duration])
-					setPaused(paused)
-				})
-				.catch((err) => {
-					console.error(err)
-					setPaused(true)
-				})
+			setPlaying({ tid, timestamp })
+			setElapsed([progress, duration])
+			setPaused(paused)
 		})
 
-		addEvent('next', ({ tid }) => {
-			if (tid == null) return setNext(null)
-			get(tid)
-				.then((track) => {
-					setNext(track)
-				})
-				.catch((err) => console.error(err))
-		})
+		addEvent('next', ({ tid }) => setNext(tid))
 
-		addEvent('previous', ({ combo, push }) => {
-			if (push) {
-				return get(push).then((track) =>
-					setPrevious((prev) => [track, ...prev])
-				)
-			}
-
-			let tids = combo.map((pair) => pair[0]),
-				timestamps = combo.map((pair) => pair[1])
-
-			getMultiple(tids)
-				.then((tracks) => {
-					// insert timestamps to tracks
-					tracks.map((track, i) => (track.timestamp = timestamps[i]))
-					setPrevious(tracks)
-				})
-				.catch((err) => console.error(err))
-		})
+		addEvent('previous', ({ combo }) => setPrevious(combo))
 
 		addEvent('top', ({ tids, timestamp }) => {
-			Promise.all([getMultiple(tids), getMultipleStats(tids)])
-				.then(([tracks, stats]) => {
-					tracks.map((track, i) => (track.stats = stats[i]))
-					setTop(tracks)
-					setTopDate(new Date(timestamp))
-				})
-				.catch((err) => console.error(err))
+			setTop(tids)
+			setTopDate(new Date(timestamp))
 		})
 	}, []) // eslint-disable-line
 
 	// save settings on change
 	useEffect(() => {
-		console.info('settings changed', settings)
 		localStorage('settings', settings)
 	}, [settings])
 
@@ -135,7 +95,7 @@ function Main() {
 									</Route>
 
 									<Route path="/utwor/:id?">
-										<Info />
+										<Info top={top[0]} />
 									</Route>
 
 									<Route path="/top">

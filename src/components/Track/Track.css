@@ -41,12 +41,21 @@
 	white-space: nowrap;
 	display: flex;
 	flex-direction: row;
+	align-items: center;
 	margin-right: 1em;
 }
 
 .track-section-a,
 .track-section-b {
 	cursor: pointer;
+}
+
+.track:nth-child(-n + 21) .track-rank {
+	color: var(--dark);
+	border-radius: 100%;
+	margin: 0 0.5em;
+	background-color: var(--light);
+	filter: drop-shadow(0 0 2px #6665);
 }
 
 .track-rank:before {
@@ -60,14 +69,14 @@
 }
 
 .track-title {
-	padding: 0px 10px;
+	margin: 0px 10px;
 	font-weight: bold;
 	text-decoration: none;
 	color: inherit;
 }
 
 .track-artist {
-	padding: 0px 10px;
+	margin: 0px 10px;
 	color: #333;
 }
 
@@ -98,18 +107,6 @@
 	backdrop-filter: blur(1px);
 	background-color: hsla(var(--deg), 35%, 22%, 71%);
 }
-
-/* .track-more:before {
-	content: '';
-	width: 100%;
-	height: 100%;
-	position: absolute;
-	background-color: var(--dark);
-	filter: blur(2px);
-	z-index: -1;
-	left: 0;
-	top: 0;
-} */
 
 .track.open > .track-more {
 	left: 0;
