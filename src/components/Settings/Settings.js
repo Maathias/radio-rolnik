@@ -1,13 +1,56 @@
-import { useContext, useState } from 'react'
+import ky from 'ky'
+import { useContext, useEffect, useState } from 'react'
+import { useLocation } from 'react-router'
 
 import { promptLogin, credentials, clearCredentials } from '../../Auth'
 
 import SettingsContext from '../../contexts/Settings'
 
+import Modal from '../Modal/Modal'
+
 import './Settings.css'
+
+function checkCode(code) {
+	return ky
+		.get(`/api/code/info/${code}`, {
+			headers: { authorization: credentials.token },
+		})
+		.json()
+}
+
+function claimCode(code) {
+	return new Promise((resolve, reject) => {
+		ky.post(`/api/code/claim/${code}`, {
+			headers: { authorization: credentials.token },
+		})
+			.json()
+			.then((ok) => {
+				resolve(ok)
+			})
+	})
+}
+
+function listCodes() {
+	return ky
+		.get(`/api/code/list`, {
+			headers: { authorization: credentials.token },
+		})
+		.json()
+}
 
 const defaults = {
 	hueFromArt: true,
+}
+
+function CodeListing({ code: { value, type, used } }) {
+	return (
+		<div className="settings-sub plain">
+			<span>
+				<b>{value}</b> - {type}
+			</span>
+			<i className={used ? 'icon-star-empty' : 'icon-star'}></i>
+		</div>
+	)
 }
 
 function Toggle({ value }) {
@@ -54,7 +97,32 @@ function SettingToggle({ children, id }) {
 }
 
 function Settings() {
-	const [creds, setCreds] = useState({ ...credentials })
+	const [creds, setCreds] = useState({ ...credentials }),
+		[code, setCode] = useState(null),
+		[modalCode, setModalCode] = useState(false),
+		[codes, setCodes] = useState([])
+
+	useEffect(() => {
+		if (credentials.token) {
+			listCodes().then((list) => setCodes(list))
+		}
+	}, [])
+
+	const { search } = useLocation()
+
+	useEffect(() => {
+		let params = new URLSearchParams(search),
+			c = params.get('c')
+
+		if (c) {
+			checkCode(c)
+				.then((info) => {
+					setCode(info)
+					setModalCode(true)
+				})
+				.catch((err) => console.error(err))
+		}
+	}, [search])
 
 	return (
 		<div className="wrapper settings">
@@ -82,8 +150,53 @@ function Settings() {
 
 			{creds.token ? null : (
 				<div className="settings-part body">
-					<b>Zaloguj się</b> aby móc głosować więcej niż na jeden utwór
+					<b>Zaloguj się</b> aby móc głosować na utwory
 				</div>
+			)}
+
+			{codes.length > 0 && (
+				<div className="settings-part body">
+					<span>Zebrane kody: </span>
+					{codes.map((code) => (
+						<CodeListing code={code} />
+					))}
+				</div>
+			)}
+
+			{modalCode && (
+				<Modal>
+					<div className="modal-title">Znalazłeś kod do aktywacji!</div>
+					<div className="modal-body">
+						<p>
+							Kod "{code.value}" jest
+							<b> {code.claimed ? 'Zajęty 😥' : 'Wolny 😁'}</b>.<br />
+						</p>
+						{!credentials.token && <p>Zaloguj się aby móc go zająć.</p>}
+						Kod typu
+						<i> {code.type}</i>: {code.desc}
+					</div>
+					<div className="modal-buttons">
+						<button
+							onClick={() => setModalCode(false)}
+							className="modal-button"
+						>
+							Zamknij
+						</button>
+						{!code.claimed && credentials.token && (
+							<button
+								onClick={() => {
+									setModalCode(false)
+									claimCode(code.value).then((ok) => {
+										listCodes().then((list) => setCodes(list))
+									})
+								}}
+								className="modal-button"
+							>
+								Zajmij
+							</button>
+						)}
+					</div>
+				</Modal>
 			)}
 
 			<div className="settings-part">
