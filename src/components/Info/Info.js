@@ -87,8 +87,8 @@ function Info({ top }) {
 		setModalReport(false)
 	}
 
-	const total = track.stats.total,
-		percent = total > 0 ? (track.stats.up / total) * 100 : 50
+	const total = track.stats?.up + track.stats?.down,
+		percent = total > 0 ? (track.stats?.up / total) * 100 : 50
 
 	document.setTitle(track.title)
 
@@ -210,8 +210,8 @@ function Info({ top }) {
 			<span className="info-data">{id}</span>
 			{modalReport && (
 				<Modal>
-					<div class="modal-title">Czy na pewno chcesz zgłosić utwór?</div>
-					<div class="modal-body">
+					<div className="modal-title">Czy na pewno chcesz zgłosić utwór?</div>
+					<div className="modal-body">
 						Zgłoszone utwory trafiają do sprawdzenia przez administrację. Jeżeli
 						<b> {track.title}</b> zawiera treści nieodpowiednie lub
 						<i> bardzo</i> nie chciałbyś go usłyszeć na korytarzu, zalecamy

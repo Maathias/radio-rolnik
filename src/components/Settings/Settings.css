@@ -45,11 +45,13 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	border-bottom: 1px solid var(--light);
 	padding: 0.4em 0.2em;
-	margin-bottom: 0.2em;
 	text-decoration: none;
 	color: inherit;
+}
+
+.settings-sub:not(:last-child) {
+	border-bottom: 1px solid var(--light);
 }
 
 .settings-sub i {
